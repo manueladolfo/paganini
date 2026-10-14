@@ -2,9 +2,8 @@ name: Tribo Keep Alive
 
 on:
   schedule:
-    # Se ejecuta cada 2 días a las 08:00 UTC (Lunes, Miércoles, Viernes...)
-    # Supabase pausa a los 7 días de inactividad; cada 48h garantiza que nunca se pause.
-    - cron: '0 8 */2 * *'
+    # Se ejecuta cada 6 horas (a las 00:00, 06:00, 12:00 y 18:00 UTC) igual que en tus otros proyectos
+    - cron: '0 */6 * * *'
   workflow_dispatch: # Permite ejecutarlo manualmente en cualquier momento desde GitHub Actions
 
 jobs:
