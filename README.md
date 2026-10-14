@@ -162,3 +162,20 @@ Si deseas subir la aplicación a internet para utilizarla fuera de casa con dato
    - Vercel desplegará automáticamente la aplicación con dominio seguro HTTPS (`https://tu-familia.vercel.app`).
 3. **Cargar tus Tareas y Premios:**
    - Puedes usar la opción **«Restaurar Copia»** desde la propia app subiendo el archivo `backups/catalogo_tareas_y_premios.json`, cargando todas tus tareas y premios en 2 segundos.
+
+---
+
+## 🏆 Release v1.0.0 (Versión Final)
+
+Esta versión consolida todas las funcionalidades clave de **Tribo**:
+- 📱 **Soporte PWA Completo**: Compatible con iOS (iPhone/iPad), Android y navegadores de escritorio para añadir como aplicación independiente a la pantalla de inicio.
+- ☁️ **Sincronización Dual**: Funciona tanto en Red Local offline-first como en la Nube con Supabase y Vercel en tiempo real.
+- 🥇 **Podio Gamificado**: Visualización animada de clasificación con trofeos (Oro, Plata, Bronce) y actualización en vivo de puntos.
+- 🔄 **Lógica de Tareas Diarias y Únicas**:
+  - Las tareas diarias se reactivan cada medianoche (00:00) para poder acumularse si los padres validan semanalmente.
+  - Las tareas únicas funcionan como catálogo permanente disponible bajo demanda.
+- 🔔 **Notificaciones en Vivo**: Campanita en tiempo real con panel adaptativo para móviles y escritorio.
+- 🎨 **Diseño y Persistencia**:
+  - Memoria de último usuario activo y de preferencia de tema claro/oscuro en `localStorage`.
+  - Iconos de alta resolución (192px, 512px, Apple Touch Icon y Favicon).
+- 🔐 **Control Parental Seguro**: Modo administrador protegido por PIN con historial de auditoría y copias de seguridad descargables en JSON.
