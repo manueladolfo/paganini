@@ -39,12 +39,25 @@ export default function Home() {
     }
   };
 
-  // Inicializar usuario por defecto (primer participante de la familia)
+  // Inicializar usuario recordando el último activo en este dispositivo/navegador
   useEffect(() => {
     if (data?.users && !currentUserId) {
-      const firstMember = data.users.find((u) => u.role === "MEMBER") || data.users[0];
-      if (firstMember) {
-        setCurrentUserId(firstMember.id);
+      const storedUserId = typeof window !== "undefined" ? localStorage.getItem("tribo-last-user-id") : null;
+      const found = storedUserId ? data.users.find((u) => u.id === storedUserId) : null;
+
+      if (found) {
+        setCurrentUserId(found.id);
+        if (found.role === "ADMIN") {
+          setAdminUserId(found.id);
+          setIsAdminMode(true);
+        } else {
+          setIsAdminMode(false);
+        }
+      } else {
+        const firstMember = data.users.find((u) => u.role === "MEMBER") || data.users[0];
+        if (firstMember) {
+          setCurrentUserId(firstMember.id);
+        }
       }
     }
   }, [data, currentUserId]);
@@ -126,6 +139,9 @@ export default function Home() {
               currentUser={currentUser}
               onSelectUser={(u) => {
                 setCurrentUserId(u.id);
+                try {
+                  localStorage.setItem("tribo-last-user-id", u.id);
+                } catch (_) {}
                 if (u.role === "ADMIN") {
                   setAdminUserId(u.id);
                   setIsAdminMode(true);
@@ -135,13 +151,24 @@ export default function Home() {
               }}
               isAdminMode={isAdminMode}
               onEnterAdmin={(admin) => {
-                if (admin) setAdminUserId(admin.id);
+                if (admin) {
+                  setAdminUserId(admin.id);
+                  setCurrentUserId(admin.id);
+                  try {
+                    localStorage.setItem("tribo-last-user-id", admin.id);
+                  } catch (_) {}
+                }
                 setIsAdminMode(true);
               }}
               onExitAdmin={() => {
                 setIsAdminMode(false);
-                const firstMember = data.users.find((u) => u.role === "MEMBER");
-                if (firstMember) setCurrentUserId(firstMember.id);
+                const firstMember = data.users.find((u) => u.role === "MEMBER") || data.users[0];
+                if (firstMember) {
+                  setCurrentUserId(firstMember.id);
+                  try {
+                    localStorage.setItem("tribo-last-user-id", firstMember.id);
+                  } catch (_) {}
+                }
               }}
             />
           </div>
@@ -160,8 +187,13 @@ export default function Home() {
             onRefresh={() => mutate()}
             onExitAdmin={() => {
               setIsAdminMode(false);
-              const firstMember = data.users.find((u) => u.role === "MEMBER");
-              if (firstMember) setCurrentUserId(firstMember.id);
+              const firstMember = data.users.find((u) => u.role === "MEMBER") || data.users[0];
+              if (firstMember) {
+                setCurrentUserId(firstMember.id);
+                try {
+                  localStorage.setItem("tribo-last-user-id", firstMember.id);
+                } catch (_) {}
+              }
             }}
           />
         ) : (

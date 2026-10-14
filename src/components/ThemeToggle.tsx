@@ -9,6 +9,16 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
+    try {
+      const stored = localStorage.getItem("tribo-theme");
+      if (stored === "light" || stored === "dark") {
+        setTheme(stored);
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(stored);
+        return;
+      }
+    } catch (_) {}
+
     const isDark = document.documentElement.classList.contains("dark");
     setTheme(isDark ? "dark" : "light");
   }, []);
@@ -17,15 +27,11 @@ export function ThemeToggle() {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
 
-    if (nextTheme === "dark") {
-      document.documentElement.classList.remove("light");
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("tribo-theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
-      localStorage.setItem("tribo-theme", "light");
-    }
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(nextTheme);
+    try {
+      localStorage.setItem("tribo-theme", nextTheme);
+    } catch (_) {}
   };
 
   if (!mounted) {
