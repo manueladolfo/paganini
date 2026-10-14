@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { UserDTO, TaskDTO, RewardDTO, RewardRedemptionDTO } from "@/lib/types";
 import { PodiumRanking } from "./PodiumRanking";
+import { LeaderboardHero } from "./LeaderboardHero";
 import { TaskCard } from "./TaskCard";
 import { RewardCard } from "./RewardCard";
 import {
@@ -86,73 +87,17 @@ export function ParticipantView({
         </div>
       )}
 
-      {/* Hero Card del Saldo y Progreso del Participante */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-emerald-800 to-slate-900 text-white border border-brand-500/30 p-6 shadow-2xl backdrop-blur-xl">
-        <div className="absolute top-0 right-0 -mr-10 -mt-10 w-44 h-44 bg-brand-400/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3.5">
-            <img
-              src={
-                currentUser.avatarUrl ||
-                `https://api.dicebear.com/7.x/adventurer/svg?seed=${currentUser.name}`
-              }
-              alt={currentUser.name}
-              className="w-14 h-14 rounded-2xl bg-white/10 border-2 border-brand-300 object-cover shadow-glow"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-extrabold text-white">{currentUser.name}</h2>
-                <span className="px-2 py-0.5 rounded-full bg-white/20 text-brand-100 text-[10px] font-black uppercase tracking-wider border border-white/30">
-                  Nivel {Math.floor(currentUser.balance / 100) + 1}
-                </span>
-              </div>
-              <p className="text-xs text-brand-100/80">
-                ¡Sigue sumando puntos para canjear tus recompensas!
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Balance Display */}
-        <div className="flex items-baseline justify-between mt-4 pt-4 border-t border-white/15">
-          <div>
-            <span className="text-xs font-semibold text-brand-200 uppercase tracking-wider block">
-              Balance disponible
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-4xl font-black text-amber-300 tracking-tight">
-                {currentUser.balance}
-              </span>
-              <span className="text-sm font-bold text-amber-200/90 uppercase">
-                pts
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {myRedemptions.length > 0 && (
-              <button
-                onClick={() => {
-                  setTab("rewards");
-                  setRewardSubTab("unlocked");
-                }}
-                className="px-2.5 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/40 text-amber-200 text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-              >
-                <PartyPopper className="w-3.5 h-3.5 text-amber-300" />
-                <span>{myRedemptions.length} canjeados</span>
-              </button>
-            )}
-
-            {pendingReviewCount > 0 && (
-              <div className="px-3 py-1.5 rounded-xl bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span>{pendingReviewCount} en revisión</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Podio Gamificado en Tiempo Real (Family Leaderboard) */}
+      <LeaderboardHero
+        currentUser={currentUser}
+        allUsers={allUsers}
+        myRedemptionsCount={myRedemptions.length}
+        pendingReviewCount={pendingReviewCount}
+        onViewRewards={() => {
+          setTab("rewards");
+          setRewardSubTab("unlocked");
+        }}
+      />
 
       {/* Navegación por pestañas móvil-first */}
       <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
