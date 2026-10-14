@@ -1,0 +1,37 @@
+name: Tribo Keep Alive
+
+on:
+  schedule:
+    # Se ejecuta cada 2 días a las 08:00 UTC (Lunes, Miércoles, Viernes...)
+    # Supabase pausa a los 7 días de inactividad; cada 48h garantiza que nunca se pause.
+    - cron: '0 8 */2 * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente en cualquier momento desde GitHub Actions
+
+jobs:
+  keep-alive:
+    name: Ping Actividad Base de Datos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping a Tribo API (Vercel + Supabase PostgreSQL)
+        run: |
+          echo "Iniciando ping a la API de Tribo para registrar actividad en Supabase..."
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://tribo-five.vercel.app/api/data)
+          echo "Código HTTP recibido: $HTTP_CODE"
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Ping completado con éxito. Consulta a Supabase PostgreSQL ejecutada."
+          else
+            echo "⚠️ Advertencia: Código HTTP recibido: $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Ping directo a Supabase REST (Opcional si se configuran Secrets)
+        if: ${{ env.SUPABASE_URL != '' && env.SUPABASE_ANON_KEY != '' }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "Realizando ping REST directo a Supabase..."
+          curl -s -f -o /dev/null -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" || true
+          echo "✅ Ping REST a Supabase ejecutado."
