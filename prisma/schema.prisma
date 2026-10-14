@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  role         String        @default("MEMBER") // "ADMIN" | "MEMBER"
+  pin          String?       // 4-digit PIN for ADMIN access (individual per parent)
+  balance      Int           @default(0)
+  avatarUrl    String?
+  isActive     Boolean       @default(true) // Activar o desactivar usuario temporalmente
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  assignedTasks      Task[]             @relation("AssignedTasks")
+  logs               ActivityLog[]
+  redemptions        RewardRedemption[]
+  notificationStates NotificationState[]
+
+  @@map("users")
+}
+
+model Task {
+  id                String      @id @default(uuid())
+  title             String
+  description       String?
+  points            Int         // Can be positive or negative
+  recurrence        String      @default("DAILY") // "DAILY" | "WEEKLY" | "ONCE"
+  status            String      @default("PENDING") // "PENDING" | "IN_REVIEW" | "COMPLETED"
+  
+  targetUserId      String?     // NULL for collective tasks (any family member can complete)
+  targetUser        User?       @relation("AssignedTasks", fields: [targetUserId], references: [id], onDelete: Cascade)
+  
+  submittedByUserId String?     // ID of member who marked "Pendiente de revisión"
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("tasks")
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsDelta Int
+  type        String   // "TASK_DONE" | "PENALTY" | "REWARD" | "MANUAL"
+  description String
+  createdAt   DateTime @default(now())
+
+  @@map("activity_logs")
+}
+
+model Reward {
+  id          String             @id @default(uuid())
+  title       String
+  costPoints  Int
+  icon        String?            @default("Gift")
+  description String?
+  createdAt   DateTime           @default(now())
+
+  redemptions RewardRedemption[]
+
+  @@map("rewards")
+}
+
+model RewardRedemption {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rewardId    String
+  reward      Reward   @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  title       String
+  costPoints  Int
+  icon        String?  @default("Gift")
+  status      String   @default("UNLOCKED") // "UNLOCKED" | "DELIVERED"
+  createdAt   DateTime @default(now())
+
+  @@map("reward_redemptions")
+}
+
+model Notification {
+  id          String              @id @default(uuid())
+  title       String
+  description String
+  type        String              // "REWARD_CLAIMED" | "TASK_DONE" | "PENALTY" | "TASK_REVIEW" | "MANUAL"
+  pointsDelta Int?
+  actorName   String
+  actorAvatar String?
+  createdAt   DateTime            @default(now())
+
+  userStates  NotificationState[]
+
+  @@map("notifications")
+}
+
+model NotificationState {
+  id             String       @id @default(uuid())
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead         Boolean      @default(false)
+  isDismissed    Boolean      @default(false) // Si el usuario la borró
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@unique([notificationId, userId])
+  @@map("notification_states")
+}

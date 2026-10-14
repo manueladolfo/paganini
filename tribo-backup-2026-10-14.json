@@ -1,0 +1,239 @@
+{
+  "version": "1.0",
+  "appName": "Tribo",
+  "exportedAt": "2026-10-14T09:45:40.163Z",
+  "counts": {
+    "tasks": 21,
+    "rewards": 8,
+    "users": 4
+  },
+  "tasks": [
+    {
+      "title": "Vaciar lavavajillas y colocar la vajilla",
+      "description": "Dejar el fregadero despejado y la vajilla limpia en sus muebles.",
+      "points": 40,
+      "recurrence": "ONCE",
+      "targetUserName": null
+    },
+    {
+      "title": "Bajar la basura (al contenedor)",
+      "description": "Tirar la basura de la cocina",
+      "points": 30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Pasear al perro por la tarde",
+      "description": "Ruta para KK y rellenar su cuenco de agua y comida al volver.",
+      "points": 50,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Completar deberes escolares y repaso exámenes (si hay)",
+      "description": "Máximo 2-3 horas de estudio concentrado sin distracciones de tablet.",
+      "points": 60,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Limpieza a fondo de habitación",
+      "description": "Barrer y fregar los suelos y sacudir el polvo",
+      "points": 120,
+      "recurrence": "WEEKLY",
+      "targetUserName": "Ana Paula"
+    },
+    {
+      "title": "Penalización: Dejar la ropa tirada en el suelo",
+      "description": "Resta directa aplicada si se deja ropa o mochilas fuera de lugar.",
+      "points": -25,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Limpieza a fondo baño",
+      "description": "Encimera, WC, Ducha, pelos ducha, mampara y suelo.",
+      "points": 50,
+      "recurrence": "WEEKLY",
+      "targetUserName": null
+    },
+    {
+      "title": "Colgar ropa tendedero",
+      "description": "Sacar ropa de la lavadora y colgarla en el tendedero de forma correcta.",
+      "points": 30,
+      "recurrence": "WEEKLY",
+      "targetUserName": null
+    },
+    {
+      "title": "Recoger KK´s Dante",
+      "description": null,
+      "points": 30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Penalización: Dejar el armario desordenado",
+      "description": null,
+      "points": -30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Dejar el baño de forma inapropiada",
+      "description": "Taza de WC abierta y WC sucio, lavabo con agua o sucio, ducha sucia sin recoger pelos y suelo sucio + estado general desordenado",
+      "points": -50,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Dejar el armario desordenado",
+      "description": null,
+      "points": -30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Dejar el escritorio de estudio desordenado",
+      "description": null,
+      "points": -30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Dejar cosas desordenadas por toda la casa",
+      "description": null,
+      "points": -30,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Contestar mal a papá o mamá",
+      "description": null,
+      "points": -150,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Lavar los platos después de comer",
+      "description": "Con cuidado y sin dar golpes para estropearlos",
+      "points": 60,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Ayudar a una tarea EXTRA a papá o mamá",
+      "description": "En un momento cualquiera papá o mamá te puede solicitar ayuda o que hagas una tarea especifica no listada, se valorará de forma extraordinaria con más puntos.",
+      "points": 150,
+      "recurrence": "ONCE",
+      "targetUserName": null
+    },
+    {
+      "title": "Limpieza a fondo de habitación",
+      "description": "Barrer y fregar los suelos y sacudir el polvo",
+      "points": 120,
+      "recurrence": "WEEKLY",
+      "targetUserName": "Manuel"
+    },
+    {
+      "title": "Tirar la basura del baño",
+      "description": "Tirar las bolsas de basura de cada baño",
+      "points": 30,
+      "recurrence": "WEEKLY",
+      "targetUserName": null
+    },
+    {
+      "title": "Hacer un EXTRA de deporte",
+      "description": "Se valora muy positivamente el hacer un deporte EXTRA además de las actividades entre semana",
+      "points": 240,
+      "recurrence": "DAILY",
+      "targetUserName": null
+    },
+    {
+      "title": "Limpiar coche de papá o mamá (interior y exterior)",
+      "description": "Debe de ser con dos trapos y dos cubos de agua para todo el proceso",
+      "points": 150,
+      "recurrence": "ONCE",
+      "targetUserName": null
+    }
+  ],
+  "rewards": [
+    {
+      "title": "1 hora extra de videojuegos o streaming",
+      "costPoints": 120,
+      "description": "Válido para consola, tablet el fin de semana.",
+      "icon": "Gamepad2"
+    },
+    {
+      "title": "Elegir el menú de la cena de un día de la semana",
+      "costPoints": 200,
+      "description": "Pizza casera, hamburguesas o comida favorita (requiere organización).",
+      "icon": "UtensilsCrossed"
+    },
+    {
+      "title": "1 hora extra de videojuegos o streaming AHORA",
+      "costPoints": 300,
+      "description": "Válido para consola, tablet en ese momento (siempre que las actividades escolares lo permitan).",
+      "icon": "Gamepad2"
+    },
+    {
+      "title": "Tarde de cine con palomitas en Casa",
+      "costPoints": 350,
+      "description": "Válido una vez realizadas las tareas escolares, cualquier día de la semana.",
+      "icon": "Film"
+    },
+    {
+      "title": "Día comodín: Exento de tareas diarias",
+      "costPoints": 450,
+      "description": "(Excepto tareas escolares) Descanso total durante 24h sin tareas asignadas .",
+      "icon": "Sparkles"
+    },
+    {
+      "title": "Salir con los amigos",
+      "costPoints": 450,
+      "description": "Valido para fines de semana",
+      "icon": "Trophy"
+    },
+    {
+      "title": "Bono de 5€ para compras personales o libros, videojuegos, etc...",
+      "costPoints": 550,
+      "description": "Transferencia directa o compra en tienda a elección.",
+      "icon": "Banknote"
+    },
+    {
+      "title": "Tarde de cine con palomitas",
+      "costPoints": 700,
+      "description": "Entrada pagada y combo de palomitas grande.",
+      "icon": "Film"
+    }
+  ],
+  "users": [
+    {
+      "name": "Papá",
+      "role": "ADMIN",
+      "balance": 100,
+      "avatarUrl": "https://api.dicebear.com/7.x/bottts/svg?seed=AdminBoss",
+      "isActive": true
+    },
+    {
+      "name": "Mamá",
+      "role": "ADMIN",
+      "balance": 100,
+      "avatarUrl": "https://api.dicebear.com/7.x/bottts/svg?seed=Sparky",
+      "isActive": true
+    },
+    {
+      "name": "Ana Paula",
+      "role": "MEMBER",
+      "balance": 0,
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=SofiaStar",
+      "isActive": false
+    },
+    {
+      "name": "Manuel",
+      "role": "MEMBER",
+      "balance": 0,
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=LucasGamer",
+      "isActive": true
+    }
+  ]
+}
