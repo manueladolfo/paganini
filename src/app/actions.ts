@@ -288,6 +288,7 @@ export async function approveAllPendingSubmissions(approvedByAdminName?: string)
 export async function rejectTaskSubmission(submissionId: string) {
   const submission = await prisma.taskSubmission.findUnique({
     where: { id: submissionId },
+    include: { task: true, user: true },
   });
   if (!submission) throw new Error("Entrega no encontrada");
 
@@ -314,6 +315,17 @@ export async function rejectTaskSubmission(submissionId: string) {
       });
     }
   });
+
+  if (submission.user && submission.task) {
+    await createFamilyNotification({
+      title: "Tarea no validada",
+      description: `${submission.user.name}, la tarea "${submission.task.title}" no fue validada. Puedes volver a realizarla hoy.`,
+      type: "TASK_REVIEW",
+      pointsDelta: 0,
+      actorName: "Admin",
+      actorAvatar: null,
+    });
+  }
 
   revalidatePath("/");
   return { success: true };
