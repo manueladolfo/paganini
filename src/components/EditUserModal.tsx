@@ -13,13 +13,57 @@ interface EditUserModalProps {
   onSaved?: () => void;
 }
 
+interface AvatarOption {
+  id: string;
+  label: string;
+  url: string;
+}
+
+const AVATAR_GROUPS: { name: string; icon: string; items: AvatarOption[] }[] = [
+  {
+    name: "Chicos",
+    icon: "👦",
+    items: [
+      { id: "boy-1", label: "Blanco (castaño)", url: "/avatars/boy-1.svg" },
+      { id: "boy-2", label: "Blanco (rubio)", url: "/avatars/boy-2.svg" },
+      { id: "boy-3", label: "Moreno", url: "/avatars/boy-3.svg" },
+      { id: "boy-4", label: "Negro", url: "/avatars/boy-4.svg" },
+    ],
+  },
+  {
+    name: "Chicas",
+    icon: "👧",
+    items: [
+      { id: "girl-1", label: "Blanca (castaña)", url: "/avatars/girl-1.svg" },
+      { id: "girl-2", label: "Blanca (rubia)", url: "/avatars/girl-2.svg" },
+      { id: "girl-3", label: "Morena", url: "/avatars/girl-3.svg" },
+      { id: "girl-4", label: "Negra", url: "/avatars/girl-4.svg" },
+    ],
+  },
+  {
+    name: "Papás",
+    icon: "👨",
+    items: [
+      { id: "dad-1", label: "Blanco (castaño)", url: "/avatars/dad-1.svg" },
+      { id: "dad-2", label: "Blanco (rubio)", url: "/avatars/dad-2.svg" },
+      { id: "dad-3", label: "Moreno", url: "/avatars/dad-3.svg" },
+      { id: "dad-4", label: "Negro", url: "/avatars/dad-4.svg" },
+    ],
+  },
+  {
+    name: "Mamás",
+    icon: "👩",
+    items: [
+      { id: "mom-1", label: "Blanca (castaña)", url: "/avatars/mom-1.svg" },
+      { id: "mom-2", label: "Blanca (pelirroja)", url: "/avatars/mom-2.svg" },
+      { id: "mom-3", label: "Morena", url: "/avatars/mom-3.svg" },
+      { id: "mom-4", label: "Negra", url: "/avatars/mom-4.svg" },
+    ],
+  },
+];
+
 const PRESET_AVATARS = [
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=PapaHero",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=MamaGenial",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=SofiaStar",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=LucasGamer",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=MateoFast",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=ElenaHero",
+  ...AVATAR_GROUPS.flatMap((g) => g.items.map((i) => i.url)),
   "https://api.dicebear.com/7.x/bottts/svg?seed=AdminBoss",
   "https://api.dicebear.com/7.x/bottts/svg?seed=Sparky",
 ];
@@ -40,6 +84,7 @@ export function EditUserModal({
   const [avatarUrl, setAvatarUrl] = useState(PRESET_AVATARS[0]);
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [avatarGroupIndex, setAvatarGroupIndex] = useState(0);
 
   useEffect(() => {
     if (userToEdit) {
@@ -215,25 +260,60 @@ export function EditUserModal({
               </div>
             </div>
 
-            {/* Galería de avatares predefinidos */}
-            <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
-              O elige un avatar ilustrado:
-            </span>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-              {PRESET_AVATARS.map((url, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  onClick={() => setAvatarUrl(url)}
-                  className={`w-9 h-9 rounded-xl overflow-hidden border-2 transition-all p-0.5 bg-white dark:bg-slate-800 ${
-                    avatarUrl === url
-                      ? "border-brand-500 scale-105 shadow-md"
-                      : "border-transparent opacity-60 hover:opacity-100"
-                  }`}
-                >
-                  <img src={url} alt="Preset" className="w-full h-full object-cover rounded-lg" />
-                </button>
-              ))}
+            {/* Galería de avatares organizados por categorías */}
+            <div className="space-y-2.5">
+              <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                O elige un avatar ilustrado de la familia:
+              </span>
+
+              {/* Selector de categoría: Chicos, Chicas, Papás, Mamás */}
+              <div className="grid grid-cols-4 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700/80 text-[11px] font-bold">
+                {AVATAR_GROUPS.map((group, idx) => (
+                  <button
+                    key={group.name}
+                    type="button"
+                    onClick={() => setAvatarGroupIndex(idx)}
+                    className={`py-1.5 px-1 rounded-lg flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                      avatarGroupIndex === idx
+                        ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black"
+                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                    }`}
+                  >
+                    <span>{group.icon}</span>
+                    <span className="truncate">{group.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* 4 Avatares de la categoría seleccionada (2 blancos, 1 oscurito, 1 negro) */}
+              <div className="grid grid-cols-4 gap-2">
+                {AVATAR_GROUPS[avatarGroupIndex].items.map((item) => {
+                  const isSelected = avatarUrl === item.url;
+                  return (
+                    <button
+                      type="button"
+                      key={item.id}
+                      onClick={() => setAvatarUrl(item.url)}
+                      className={`group flex flex-col items-center gap-1 p-2 rounded-2xl border-2 transition-all cursor-pointer bg-slate-50/60 dark:bg-slate-800/50 ${
+                        isSelected
+                          ? "border-brand-500 bg-brand-50/50 dark:bg-brand-950/30 scale-102 shadow-md shadow-brand-500/15"
+                          : "border-slate-200 dark:border-slate-700/70 hover:border-slate-300 dark:hover:border-slate-600 opacity-80 hover:opacity-100"
+                      }`}
+                    >
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-white dark:bg-slate-800 p-0.5 shadow-xs">
+                        <img
+                          src={item.url}
+                          alt={item.label}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 text-center leading-tight truncate w-full">
+                        {item.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
