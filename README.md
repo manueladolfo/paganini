@@ -1,6 +1,20 @@
 # 🏠 Tribo - Gestión Familiar de Tareas, Hábitos y Recompensas
 
-**Tribo** es una aplicación web local, mobile-first y gamificada (estilo Duolingo y productividad moderna, neutral para adolescentes y adultos) diseñada para coordinar las tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real en red local.
+**Tribo** es una aplicación web local y en la nube, mobile-first y gamificada (estilo Duolingo y productividad moderna, neutral para adolescentes y adultos) diseñada para coordinar las tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real.
+
+---
+
+## 📸 Vistas de la Aplicación
+
+| 📋 Tareas del Participante | 🎁 Catálogo de Recompensas |
+|:---:|:---:|
+| <img src="docs/screenshots/01-participant-tasks.png" width="360" alt="Tareas del Participante" /> | <img src="docs/screenshots/02-participant-rewards.png" width="360" alt="Catálogo de Recompensas" /> |
+| *Visualización de tareas diarias, puntos acumulados y entregas* | *Canje de premios por puntos acumulados y recompensas desbloqueadas* |
+
+| ✅ Panel Admin (Validaciones) | 🛠️ Panel Admin (Gestión de Tareas) |
+|:---:|:---:|
+| <img src="docs/screenshots/03-admin-approval.png" width="360" alt="Aprobación de Tareas" /> | <img src="docs/screenshots/04-admin-tasks.png" width="360" alt="Gestión de Tareas" /> |
+| *Supervisión con PIN individual, backups y aprobación rápida* | *Catálogo general de tareas: añadir, editar o penalizaciones* |
 
 ---
 
