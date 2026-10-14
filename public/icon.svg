@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="triboGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#047857" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background App Squircle -->
+  <rect x="24" y="24" width="464" height="464" rx="116" fill="url(#triboGrad)" filter="url(#shadow)"/>
+
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="26" y="26" width="460" height="460" rx="114" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.25"/>
+
+  <!-- House Outline (Hogar acogedor) -->
+  <path d="M120 236 L256 124 L392 236 L392 376 A28 28 0 0 1 364 404 L148 404 A28 28 0 0 1 120 376 Z" 
+        fill="none" 
+        stroke="#ffffff" 
+        stroke-width="32" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+
+  <!-- Cross / Tribe Community Symbol (+) -->
+  <line x1="256" y1="220" x2="256" y2="336" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
+  <line x1="198" y1="278" x2="314" y2="278" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
+
+  <!-- Central Unity Dot -->
+  <circle cx="256" cy="278" r="32" fill="#ffffff"/>
+</svg>

@@ -13,6 +13,22 @@ export const metadata: Metadata = {
   title: "Tribo | Hábitos y Recompensas en Familia",
   description:
     "Tribo: Plataforma gamificada, mobile-first y moderna para coordinar tareas, hábitos y recompensas familiares en tiempo real.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Tribo",
+  },
 };
 
 export const viewport: Viewport = {
@@ -20,7 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#16a34a",
+  themeColor: "#059669",
 };
 
 export default function RootLayout({

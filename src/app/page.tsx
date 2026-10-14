@@ -99,7 +99,7 @@ export default function Home() {
           </div>
 
           {/* Acciones de Cabecera: Sonido + Notificaciones + Selector de Tema + Switcher de Usuario */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             <button
               onClick={toggleSound}
               aria-label={isMuted ? "Activar efectos de sonido" : "Silenciar efectos de sonido"}

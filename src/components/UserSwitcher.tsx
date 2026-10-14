@@ -53,7 +53,7 @@ export function UserSwitcher({
       <div className="relative">
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="flex items-center gap-2.5 p-1.5 pr-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all text-left shadow-sm active:scale-98 cursor-pointer"
+          className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-2 sm:pr-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all text-left shadow-sm active:scale-98 cursor-pointer shrink-0"
         >
           <img
             src={
@@ -61,30 +61,32 @@ export function UserSwitcher({
               `https://api.dicebear.com/7.x/adventurer/svg?seed=${currentUser.name}`
             }
             alt={currentUser.name}
-            className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 object-cover border border-slate-200 dark:border-slate-700"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 dark:bg-slate-800 object-cover border border-slate-200 dark:border-slate-700 shrink-0"
           />
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1">
-              {currentUser.name}
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[65px] sm:max-w-[100px]">
+                {currentUser.name}
+              </span>
               {currentUser.role === "ADMIN" && (
-                <span className="text-[10px] bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.2 rounded-md font-bold">
+                <span className="text-[9px] bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1 py-0.2 rounded font-black tracking-tight shrink-0">
                   ADMIN
                 </span>
               )}
-            </span>
+            </div>
             {currentUser.role !== "ADMIN" ? (
-              <span className="text-[11px] text-amber-500 font-extrabold flex items-center gap-0.5">
-                <Sparkles className="w-3 h-3 text-amber-500 inline" />
+              <span className="text-[10px] sm:text-[11px] text-amber-500 font-extrabold flex items-center gap-0.5">
+                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-500 inline shrink-0" />
                 {currentUser.balance} pts
               </span>
             ) : (
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium leading-tight">
                 Supervisor
               </span>
             )}
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-slate-400 ml-1 transition-transform duration-200 ${
+            className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform duration-200 ${
               dropdownOpen ? "rotate-180" : ""
             }`}
           />
