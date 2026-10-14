@@ -1,6 +1,16 @@
-# 🎸 Paganini - Gestión Familiar de Tareas, Hábitos y Recompensas
+<div align="center">
+  <img src="public/paganini-logo.png" width="220" alt="Paganini Logo" style="border-radius: 44px; box-shadow: 0 12px 36px rgba(37, 99, 235, 0.25);" />
 
-**Paganini** es una aplicación web local y en la nube, mobile-first y gamificada (estilo Duolingo y productividad moderna, neutral para adolescentes y adultos) diseñada para coordinar las tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real.
+  # 🎸 Paganini
+  ### Gestión Familiar de Tareas, Hábitos y Recompensas
+
+  *Plataforma gamificada, mobile-first y moderna para coordinar tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real.*
+
+  <br />
+
+  [🚀 Abrir Aplicación](https://paganini-five.vercel.app) • [📸 Vistas](#-vistas-de-la-aplicación) • [🌟 Características](#-características-principales) • [🛠️ Instalación](#-puesta-en-marcha-local)
+
+</div>
 
 ---
 
