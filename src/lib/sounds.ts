@@ -201,6 +201,71 @@ class SoundEngine {
       osc.stop(now + 0.3);
     } catch (_) {}
   }
+
+  // Llanto cómico de caricatura (hombre llorando/quejándose desconsolado "¡Buaaah-wawawa!")
+  public playCartoonCry() {
+    if (this.getMuted()) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+
+      // Sollozos cómicos sucesivos
+      const sobs = [
+        { start: 0.0, dur: 0.35, fStart: 210, fPeak: 280, fEnd: 190, vol: 0.22, wahFreq: 1100 },
+        { start: 0.32, dur: 0.42, fStart: 230, fPeak: 320, fEnd: 175, vol: 0.28, wahFreq: 1300 },
+        { start: 0.72, dur: 0.65, fStart: 260, fPeak: 290, fEnd: 130, vol: 0.32, wahFreq: 950 },
+      ];
+
+      sobs.forEach((sob) => {
+        const t0 = now + sob.start;
+        const tEnd = t0 + sob.dur;
+
+        // 1. Oscilador principal (cuerdas vocales caricaturescas)
+        const osc = ctx.createOscillator();
+        osc.type = "sawtooth";
+
+        // Curva de tono de llanto: sube con sollozo y cae con tristeza
+        osc.frequency.setValueAtTime(sob.fStart, t0);
+        osc.frequency.linearRampToValueAtTime(sob.fPeak, t0 + sob.dur * 0.25);
+        osc.frequency.exponentialRampToValueAtTime(sob.fEnd, tEnd);
+
+        // 2. LFO de vibrato (temblor cómico de la voz llorosa)
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.type = "sine";
+        lfo.frequency.setValueAtTime(8.5, t0); // 8.5 Hz de trémolo rápido
+        lfoGain.gain.setValueAtTime(14, t0); // Variación de +/- 14Hz
+        lfo.connect(osc.frequency);
+
+        // 3. Filtro formante vocal (efecto "wah-wah / buaah" de boca abriéndose)
+        const filter = ctx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.Q.setValueAtTime(3.2, t0);
+        filter.frequency.setValueAtTime(450, t0);
+        filter.frequency.linearRampToValueAtTime(sob.wahFreq, t0 + sob.dur * 0.3);
+        filter.frequency.exponentialRampToValueAtTime(400, tEnd);
+
+        // 4. Ganancia y envolvente de volumen
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.001, t0);
+        gain.gain.linearRampToValueAtTime(sob.vol, t0 + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, tEnd);
+
+        // Conexiones
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        // Iniciar
+        osc.start(t0);
+        lfo.start(t0);
+        osc.stop(tEnd + 0.02);
+        lfo.stop(tEnd + 0.02);
+      });
+    } catch (_) {}
+  }
 }
 
 export const sounds = new SoundEngine();
