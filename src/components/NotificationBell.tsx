@@ -100,21 +100,21 @@ export function NotificationBell({
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs sm:hidden"
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-80 sm:w-92 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-4 z-50 animate-fadeIn backdrop-blur-xl">
+          <div className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-auto sm:right-0 mt-2 sm:w-92 max-w-[calc(100vw-1.5rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-4 z-50 animate-fadeIn backdrop-blur-xl">
             <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="p-1.5 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 shrink-0">
                   <Bell className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white">
-                    Notificaciones de {currentUser.name}
+                <div className="min-w-0">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white truncate">
+                    Notificaciones • {currentUser.name}
                   </h3>
-                  <p className="text-[10px] text-slate-400">
-                    Sincronizadas en tiempo real en la red local
+                  <p className="text-[10px] text-slate-400 truncate">
+                    Sincronización en tiempo real
                   </p>
                 </div>
               </div>

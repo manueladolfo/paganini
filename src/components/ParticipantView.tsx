@@ -38,14 +38,19 @@ export function ParticipantView({
   onRefresh,
 }: ParticipantViewProps) {
   const [tab, setTab] = useState<"tasks" | "rewards" | "ranking">("tasks");
-  const [taskFilter, setTaskFilter] = useState<"all" | "mine" | "collective">("all");
+  const [taskFilter, setTaskFilter] = useState<"all" | "daily" | "weekly" | "once">("all");
   const [rewardSubTab, setRewardSubTab] = useState<"catalog" | "unlocked">("catalog");
 
-  // Filtrar tareas relevantes para el participante actual
-  const relevantTasks = tasks.filter((t) => {
-    if (taskFilter === "mine") return t.targetUserId === currentUser.id;
-    if (taskFilter === "collective") return !t.targetUserId;
-    return t.targetUserId === currentUser.id || !t.targetUserId;
+  // Filtrar tareas según la categoría seleccionada (Diaria, Semanal, Puntual, Todas)
+  const myAccessibleTasks = tasks.filter(
+    (t) => t.targetUserId === currentUser.id || !t.targetUserId
+  );
+
+  const relevantTasks = myAccessibleTasks.filter((t) => {
+    if (taskFilter === "daily") return t.recurrence === "DAILY";
+    if (taskFilter === "weekly") return t.recurrence === "WEEKLY";
+    if (taskFilter === "once") return t.recurrence === "ONCE";
+    return true; // "all"
   });
 
   const pendingReviewCount = tasks.filter(
@@ -60,7 +65,7 @@ export function ParticipantView({
     setTab(newTab);
   };
 
-  const handleFilterChange = (filter: "all" | "mine" | "collective") => {
+  const handleFilterChange = (filter: "all" | "daily" | "weekly" | "once") => {
     sounds.playMechanicalClick();
     setTaskFilter(filter);
   };
@@ -144,19 +149,18 @@ export function ParticipantView({
       {/* Contenido según pestaña */}
       {tab === "tasks" && (
         <div className="space-y-4">
-          {/* Subfiltro de tareas */}
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 shrink-0">
               <span>Tareas Pendientes</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border border-slate-300 dark:border-slate-700 font-bold">
                 {relevantTasks.length}
               </span>
             </h3>
 
-            <div className="flex gap-1 bg-slate-200/60 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-0.5 rounded-xl text-[11px] font-semibold">
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-200/60 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-0.5 rounded-xl text-[10px] sm:text-[11px] font-semibold overflow-x-auto max-w-full">
               <button
                 onClick={() => handleFilterChange("all")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                   taskFilter === "all"
                     ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -165,24 +169,34 @@ export function ParticipantView({
                 Todas
               </button>
               <button
-                onClick={() => handleFilterChange("mine")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                  taskFilter === "mine"
+                onClick={() => handleFilterChange("daily")}
+                className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                  taskFilter === "daily"
                     ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
-                Mías
+                Diarias
               </button>
               <button
-                onClick={() => handleFilterChange("collective")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                  taskFilter === "collective"
+                onClick={() => handleFilterChange("weekly")}
+                className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                  taskFilter === "weekly"
                     ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                 }`}
               >
-                Colectivas
+                Semanales
+              </button>
+              <button
+                onClick={() => handleFilterChange("once")}
+                className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                  taskFilter === "once"
+                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                }`}
+              >
+                Únicas
               </button>
             </div>
           </div>
