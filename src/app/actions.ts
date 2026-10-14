@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { sendPushToUser, sendPushToAdmins } from "@/lib/webpush";
 
 export async function getAppData() {
   const [users, tasks, submissions, rewards, logs, redemptions, notifications] = await Promise.all([
@@ -148,6 +149,14 @@ export async function markTaskInReview(taskId: string, userId: string) {
       actorName: user.name,
       actorAvatar: user.avatarUrl,
     });
+
+    // Enviar push en directo a los móviles de los padres
+    await sendPushToAdmins({
+      title: "📋 Tarea para validar",
+      body: `${user.name} completó "${task.title}" (+${task.points} pts)`,
+      url: "/",
+      tag: "task-review",
+    });
   }
 
   revalidatePath("/");
@@ -218,6 +227,14 @@ export async function approveTaskSubmission(submissionId: string, approvedByAdmi
     pointsDelta: submission.points,
     actorName: approvedByAdminName || "Admin",
     actorAvatar: null,
+  });
+
+  // Enviar push en directo al móvil del hijo/participante
+  await sendPushToUser(submission.userId, {
+    title: "¡Tarea aprobada! 🌟",
+    body: `¡Enhorabuena! Has ganado +${submission.points} pts por: "${submission.task.title}"`,
+    url: "/",
+    tag: "task-approved",
   });
 
   revalidatePath("/");
@@ -325,6 +342,14 @@ export async function rejectTaskSubmission(submissionId: string) {
       actorName: "Admin",
       actorAvatar: null,
     });
+
+    // Enviar push en directo al móvil del hijo/participante
+    await sendPushToUser(submission.userId, {
+      title: "Tarea no aprobada ⚠️",
+      body: `La tarea "${submission.task.title}" no fue aprobada por los padres. ¡Vuelve a realizarla hoy!`,
+      url: "/",
+      tag: "task-rejected",
+    });
   }
 
   revalidatePath("/");
@@ -393,6 +418,14 @@ export async function addManualPoints(
     pointsDelta,
     actorName: user.name,
     actorAvatar: user.avatarUrl,
+  });
+
+  // Enviar push en directo al móvil del usuario
+  await sendPushToUser(userId, {
+    title: pointsDelta >= 0 ? "¡Puntos sumados! 🎉" : "Puntos ajustados ⚠️",
+    body: `${pointsDelta > 0 ? "+" : ""}${pointsDelta} pts: ${description}`,
+    url: "/",
+    tag: "points-adjusted",
   });
 
   revalidatePath("/");
@@ -513,6 +546,14 @@ export async function redeemReward(rewardId: string, userId: string) {
     pointsDelta: -reward.costPoints,
     actorName: user.name,
     actorAvatar: user.avatarUrl,
+  });
+
+  // Enviar push a los móviles de los administradores (padres)
+  await sendPushToAdmins({
+    title: "🎁 ¡Canje de premio familiar!",
+    body: `${user.name} ha canjeado: "${reward.title}" (-${reward.costPoints} pts)`,
+    url: "/",
+    tag: "reward-claimed",
   });
 
   revalidatePath("/");
@@ -689,9 +730,17 @@ export async function updateUserPin(userId: string, newPin: string) {
 
 // Administrador: Marcar recompensa canjeada como entregada/disfrutada
 export async function markRewardDelivered(redemptionId: string) {
-  await prisma.rewardRedemption.update({
+  const redemption = await prisma.rewardRedemption.update({
     where: { id: redemptionId },
     data: { status: "DELIVERED" },
+  });
+
+  // Enviar push al hijo informando que su premio ha sido entregado
+  await sendPushToUser(redemption.userId, {
+    title: "¡Premio entregado! 🎉",
+    body: `Ya puedes disfrutar de tu recompensa: "${redemption.title}". ¡A disfrutarlo!`,
+    url: "/",
+    tag: "reward-delivered",
   });
 
   revalidatePath("/");
@@ -981,5 +1030,62 @@ export async function restoreBackupData(
   return { success: true };
 }
 
+// -------------------------------------------------------------
+// WEB PUSH NOTIFICATIONS: Registro y suscripción de dispositivos
+// -------------------------------------------------------------
 
+export async function savePushSubscription(
+  userId: string,
+  subscription: {
+    endpoint: string;
+    keys: { p256dh: string; auth: string };
+  },
+  userAgent?: string
+) {
+  if (!subscription || !subscription.endpoint || !subscription.keys) {
+    throw new Error("Suscripción Web Push no válida");
+  }
 
+  await prisma.pushSubscription.upsert({
+    where: { endpoint: subscription.endpoint },
+    update: {
+      userId,
+      p256dh: subscription.keys.p256dh,
+      auth: subscription.keys.auth,
+      userAgent: userAgent || null,
+    },
+    create: {
+      userId,
+      endpoint: subscription.endpoint,
+      p256dh: subscription.keys.p256dh,
+      auth: subscription.keys.auth,
+      userAgent: userAgent || null,
+    },
+  });
+
+  return { success: true };
+}
+
+export async function removePushSubscription(endpoint: string) {
+  if (!endpoint) return { success: false };
+  await prisma.pushSubscription.deleteMany({
+    where: { endpoint },
+  });
+  return { success: true };
+}
+
+export async function testPushNotification(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  });
+
+  await sendPushToUser(userId, {
+    title: "¡Paganini está conectado! 🎸",
+    body: `Hola ${user?.name || ""}, las notificaciones push en este dispositivo funcionan perfectamente.`,
+    url: "/",
+    tag: "test-push",
+  });
+
+  return { success: true };
+}

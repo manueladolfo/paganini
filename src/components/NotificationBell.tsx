@@ -10,6 +10,7 @@ import {
   deleteUserNotification,
   clearAllUserNotifications,
 } from "@/app/actions";
+import { PushNotificationManager } from "./PushNotificationManager";
 
 interface NotificationBellProps {
   currentUser: UserDTO;
@@ -141,6 +142,12 @@ export function NotificationBell({
                 </button>
               </div>
             </div>
+
+            {/* Configuración de Notificaciones Push para Dispositivos (iPhone, Android, PC) */}
+            <PushNotificationManager
+              currentUserId={currentUser.id}
+              userName={currentUser.name}
+            />
 
             {/* Listado de notificaciones */}
             <div className="max-h-80 overflow-y-auto space-y-2 pr-1">
