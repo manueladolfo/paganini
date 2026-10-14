@@ -801,7 +801,7 @@ export async function exportBackupData() {
 
   const backup = {
     version: "1.0",
-    appName: "Tribo",
+    appName: "Paganini",
     exportedAt: new Date().toISOString(),
     counts: {
       tasks: tasks.length,

@@ -1,11 +1,11 @@
 {
-  "name": "Tribo",
-  "short_name": "Tribo",
-  "description": "Tribo: Hábitos, Tareas y Recompensas en Familia",
+  "name": "Paganini",
+  "short_name": "Paganini",
+  "description": "Paganini: Hábitos, Tareas y Recompensas en Familia",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#090d16",
-  "theme_color": "#059669",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/icon-192.png",

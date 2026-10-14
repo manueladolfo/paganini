@@ -48,7 +48,7 @@ export function BackupModal({ isOpen, onClose, onRestored }: BackupModalProps) {
 
       const dateStr = new Date().toISOString().split("T")[0];
       link.href = url;
-      link.download = `tribo-backup-${dateStr}.json`;
+      link.download = `paganini-backup-${dateStr}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -101,7 +101,7 @@ export function BackupModal({ isOpen, onClose, onRestored }: BackupModalProps) {
 
       if (!payload.tasks && !payload.rewards) {
         throw new Error(
-          "El archivo seleccionado no parece ser una copia de seguridad válida de Tribo."
+          "El archivo seleccionado no parece ser una copia de seguridad válida de Paganini o Tribo."
         );
       }
 

@@ -1,6 +1,6 @@
-# 🏠 Tribo - Gestión Familiar de Tareas, Hábitos y Recompensas
+# 🎸 Paganini - Gestión Familiar de Tareas, Hábitos y Recompensas
 
-**Tribo** es una aplicación web local y en la nube, mobile-first y gamificada (estilo Duolingo y productividad moderna, neutral para adolescentes y adultos) diseñada para coordinar las tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real.
+**Paganini** es una aplicación web local y en la nube, mobile-first y gamificada (estilo Duolingo y productividad moderna, neutral para adolescentes y adultos) diseñada para coordinar las tareas del hogar, motivar buenos hábitos familiares y gestionar recompensas con sincronización en tiempo real.
 
 ---
 
@@ -23,7 +23,7 @@
 ### 1. Experiencia Visual y Gamificación
 - **Diseño Mobile-First y Moderno:** Interfaz optimizada para smartphones, tablets y pantallas de escritorio.
 - **Modo Claro y Oscuro:** Selector de tema persistente (Dark / Light mode) con paletas HSL cuidadas y tipografía de alta legibilidad (*Plus Jakarta Sans*).
-- **Identidad de Marca:** Logotipo dinámico de hogar y equipo (*TriboLogo*) con gradiente esmeralda/teal y sombras elevadas.
+- **Identidad de Marca:** Logotipo dinámico (*PaganiniLogo*) con el icónico avatar 3D del papá rockero (camiseta de Héroes del Silencio, barba y billetes de euro volando).
 - **Motor de Sonido Háptico (Web Audio API):**
   - Sonidos de pulsación mecánica de teclado al hacer clic en botones y teclado de PIN.
   - Fanfarria de victoria y lluvia de confeti (`canvas-confetti`) al canjear recompensas.
@@ -68,7 +68,7 @@
 
 - **Framework Web:** [Next.js 15](https://nextjs.org/) (App Router) + [TypeScript](https://www.typescriptlang.org/)
 - **Estilos:** [Tailwind CSS](https://tailwindcss.com/) con soporte de modo oscuro y clases de diseño gamificado
-- **Base de Datos:** SQLite local gestionado exclusivamente con **Prisma ORM**
+- **Base de Datos:** SQLite local o PostgreSQL en Supabase gestionado con **Prisma ORM**
 - **Estado y Sincronización:** **Server Actions** para mutaciones transaccionales y **SWR** (revalidación periódica y en foco) para actualización instantánea en red local
 - **Audio:** Sintetizador Web Audio API nativo (sin dependencias externas de archivos de audio)
 - **Iconografía:** [Lucide React](https://lucide.dev/) y animaciones de confeti con `canvas-confetti`
@@ -78,13 +78,20 @@
 ## 📂 Estructura del Proyecto
 
 ```text
-TareasFam-IA/
+Paganini/
 ├── backups/
 │   └── catalogo_tareas_y_premios.json  # Copia de seguridad estática de tareas y premios
 ├── prisma/
 │   ├── dev.db                          # Base de datos SQLite local
 │   ├── schema.prisma                   # Esquema de base de datos relacional
 │   └── seed.js                         # Semilla para inicialización de datos
+├── public/
+│   ├── icon-192.png                    # Icono PWA (192x192)
+│   ├── icon-512.png                    # Icono PWA (512x512)
+│   ├── apple-touch-icon.png            # Icono para iOS Safari
+│   ├── favicon.ico                     # Favicon del navegador
+│   ├── paganini-logo.png               # Logo e icono de cabecera de alta resolución
+│   └── manifest.json                   # Manifiesto PWA para instalación móvil
 ├── src/
 │   ├── app/
 │   │   ├── actions.ts                  # Server Actions (CRUD tareas, premios, usuarios, PIN, notificaciones y backups)
@@ -92,7 +99,7 @@ TareasFam-IA/
 │   │   │   └── data/
 │   │   │       └── route.ts            # Endpoint de sincronización en tiempo real vía SWR
 │   │   ├── globals.css                 # Variables de diseño, botones táctiles gamificados y temas
-│   │   ├── layout.tsx                  # Layout raíz y fuentes tipográficas
+│   │   ├── layout.tsx                  # Layout raíz, metadatos SEO y fuentes tipográficas
 │   │   └── page.tsx                    # Vista principal, switch de usuarios y sincronizador
 │   ├── components/
 │   │   ├── AdminView.tsx               # Panel de control de padres (Validar, Canjes, Tareas, Familia, Auditoría)
@@ -101,6 +108,7 @@ TareasFam-IA/
 │   │   ├── EditUserModal.tsx           # Ficha de miembro (foto de dispositivo, rol, PIN, saldo, activar/pausar)
 │   │   ├── ManualPointsModal.tsx       # Ajuste manual rápido de puntos (+/-) con motivo
 │   │   ├── NotificationBell.tsx        # Campanita con estados de lectura individual por usuario
+│   │   ├── PaganiniLogo.tsx            # Componente de marca e icono 3D de la aplicación
 │   │   ├── ParticipantView.tsx         # Dashboard del participante (tareas, catálogo, desbloqueados y ranking)
 │   │   ├── PinModal.tsx                # Teclado numérico táctil para autenticación de padres
 │   │   ├── PodiumRanking.tsx           # Podio semanal gamificado (oro, plata y bronce)
@@ -109,7 +117,6 @@ TareasFam-IA/
 │   │   ├── TaskCard.tsx                # Tarjeta de tarea con botón de marcar para revisión
 │   │   ├── TaskModal.tsx               # Modal de creación y edición completa de tareas
 │   │   ├── ThemeToggle.tsx             # Interruptor de Modo Claro / Modo Oscuro
-│   │   ├── TriboLogo.tsx               # Logotipo vectorial escalable de la aplicación
 │   │   └── UserSwitcher.tsx            # Selector desplegable de perfiles familiares
 │   └── lib/
 │       ├── prisma.ts                   # Cliente singleton de Prisma ORM
@@ -159,16 +166,16 @@ Si deseas subir la aplicación a internet para utilizarla fuera de casa con dato
 2. **Alojamiento en Vercel:**
    - Conecta tu repositorio de GitHub a [Vercel](https://vercel.com/).
    - Configura la variable de entorno `DATABASE_URL` de Supabase.
-   - Vercel desplegará automáticamente la aplicación con dominio seguro HTTPS (`https://tu-familia.vercel.app`).
+   - Vercel desplegará automáticamente la aplicación con dominio seguro HTTPS.
 3. **Cargar tus Tareas y Premios:**
    - Puedes usar la opción **«Restaurar Copia»** desde la propia app subiendo el archivo `backups/catalogo_tareas_y_premios.json`, cargando todas tus tareas y premios en 2 segundos.
 
 ---
 
-## 🏆 Release v1.0.0 (Versión Final)
+## 🏆 Release v1.0.0 (Paganini Edition)
 
-Esta versión consolida todas las funcionalidades clave de **Tribo**:
-- 📱 **Soporte PWA Completo**: Compatible con iOS (iPhone/iPad), Android y navegadores de escritorio para añadir como aplicación independiente a la pantalla de inicio.
+Esta versión consolida todas las funcionalidades clave de **Paganini**:
+- 📱 **Soporte PWA Completo**: Compatible con iOS (iPhone/iPad), Android y navegadores de escritorio para añadir como aplicación independiente a la pantalla de inicio con su icono exclusivo.
 - ☁️ **Sincronización Dual**: Funciona tanto en Red Local offline-first como en la Nube con Supabase y Vercel en tiempo real.
 - 🥇 **Podio Gamificado**: Visualización animada de clasificación con trofeos (Oro, Plata, Bronce) y actualización en vivo de puntos.
 - 🔄 **Lógica de Tareas Diarias y Únicas**:
@@ -177,5 +184,5 @@ Esta versión consolida todas las funcionalidades clave de **Tribo**:
 - 🔔 **Notificaciones en Vivo**: Campanita en tiempo real con panel adaptativo para móviles y escritorio.
 - 🎨 **Diseño y Persistencia**:
   - Memoria de último usuario activo y de preferencia de tema claro/oscuro en `localStorage`.
-  - Iconos de alta resolución (192px, 512px, Apple Touch Icon y Favicon).
+  - Iconos de alta resolución (192px, 512px, Apple Touch Icon y Favicon) con la ilustración de Paganini.
 - 🔐 **Control Parental Seguro**: Modo administrador protegido por PIN con historial de auditoría y copias de seguridad descargables en JSON.

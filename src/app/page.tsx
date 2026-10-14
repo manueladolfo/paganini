@@ -6,7 +6,7 @@ import { UserDTO, FamilyAppData } from "@/lib/types";
 import { ParticipantView } from "@/components/ParticipantView";
 import { AdminView } from "@/components/AdminView";
 import { UserSwitcher } from "@/components/UserSwitcher";
-import { TriboLogo } from "@/components/TriboLogo";
+import { PaganiniLogo } from "@/components/PaganiniLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Wifi, Sparkles, Volume2, VolumeX } from "lucide-react";
@@ -70,9 +70,9 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
         <div className="mb-4 animate-pulse">
-          <TriboLogo size={88} />
+          <PaganiniLogo size={88} />
         </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Tribo</h2>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Paganini</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Conectando a la red local...</p>
       </div>
     );
@@ -85,12 +85,12 @@ export default function Home() {
         {/* Cabecera Principal */}
         <header className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-800/80">
           <div className="flex items-center gap-2.5 sm:gap-3.5">
-            <TriboLogo size={52} className="sm:hidden" />
-            <TriboLogo size={62} className="hidden sm:flex" />
+            <PaganiniLogo size={48} className="sm:hidden" />
+            <PaganiniLogo size={58} className="hidden sm:flex" />
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Tribo
+                  Paganini
                 </h1>
                 {data.dbMode === "SUPABASE" ? (
                   <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide">

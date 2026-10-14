@@ -10,9 +10,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Tribo | Hábitos y Recompensas en Familia",
+  title: "Paganini | Hábitos y Recompensas en Familia",
   description:
-    "Tribo: Plataforma gamificada, mobile-first y moderna para coordinar tareas, hábitos y recompensas familiares en tiempo real.",
+    "Paganini: Plataforma gamificada, mobile-first y moderna para coordinar tareas, hábitos y recompensas familiares en tiempo real.",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Tribo",
+    title: "Paganini",
   },
 };
 
