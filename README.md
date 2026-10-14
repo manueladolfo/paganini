@@ -180,19 +180,19 @@ Si deseas subir la aplicación a internet para utilizarla fuera de casa con dato
 3. **Cargar tus Tareas y Premios:**
    - Puedes usar la opción **«Restaurar Copia»** desde la propia app subiendo el archivo `backups/catalogo_tareas_y_premios.json`, cargando todas tus tareas y premios en 2 segundos.
 
----
+## 🏆 Historial de Versiones
 
-## 🏆 Release v1.0.0 (Paganini Edition)
+### 🎸 Release v1.1.0 (Paganini Edition & Rebranding)
+- 🎨 **Nuevo Nombre e Identidad**: Cambio oficial de nombre a **Paganini** en toda la aplicación, metadatos PWA y documentación.
+- 🖼️ **Iconografía 3D Full-Bleed**: Nuevo icono de marca exclusivo en alta definición con el papá rockero (camiseta de Héroes del Silencio, barba, gafas y billetes de euro volando), optimizado de borde a borde para pantallas retina, accesos directos de móviles (PWA) y favicon de navegador.
+- 🌐 **Despliegue y Dominios**: Conexión y despliegue sincronizado en Vercel (`paganini-five.vercel.app`) y repositorio GitHub renombrado.
+- 📋 **Copias de Seguridad Actualizadas**: Sistema de backup y restauración con prefijo oficial `paganini-backup-*.json`.
 
-Esta versión consolida todas las funcionalidades clave de **Paganini**:
-- 📱 **Soporte PWA Completo**: Compatible con iOS (iPhone/iPad), Android y navegadores de escritorio para añadir como aplicación independiente a la pantalla de inicio con su icono exclusivo.
+### 📦 Release v1.0.0
+Esta versión inicial consolidó las funcionalidades clave:
+- 📱 **Soporte PWA Completo**: Compatible con iOS (iPhone/iPad), Android y navegadores de escritorio para añadir como aplicación independiente a la pantalla de inicio.
 - ☁️ **Sincronización Dual**: Funciona tanto en Red Local offline-first como en la Nube con Supabase y Vercel en tiempo real.
 - 🥇 **Podio Gamificado**: Visualización animada de clasificación con trofeos (Oro, Plata, Bronce) y actualización en vivo de puntos.
-- 🔄 **Lógica de Tareas Diarias y Únicas**:
-  - Las tareas diarias se reactivan cada medianoche (00:00) para poder acumularse si los padres validan semanalmente.
-  - Las tareas únicas funcionan como catálogo permanente disponible bajo demanda.
-- 🔔 **Notificaciones en Vivo**: Campanita en tiempo real con panel adaptativo para móviles y escritorio.
-- 🎨 **Diseño y Persistencia**:
-  - Memoria de último usuario activo y de preferencia de tema claro/oscuro en `localStorage`.
-  - Iconos de alta resolución (192px, 512px, Apple Touch Icon y Favicon) con la ilustración de Paganini.
+- 🔄 **Lógica de Tareas Diarias y Únicas**: Las tareas diarias se reactivan cada medianoche (00:00).
+- 🔔 **Notificaciones en Vivo**: Campanita en tiempo real con panel adaptativo.
 - 🔐 **Control Parental Seguro**: Modo administrador protegido por PIN con historial de auditoría y copias de seguridad descargables en JSON.
