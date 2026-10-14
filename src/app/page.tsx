@@ -66,25 +66,34 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col items-center transition-colors duration-200">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col items-center transition-colors duration-200">
       {/* Contenedor central adaptado a Mobile-First (max-w-md / max-w-lg en tablet) */}
-      <div className="w-full max-w-lg min-h-screen flex flex-col px-4 pt-4 sm:pt-6">
+      <div className="w-full max-w-lg min-h-screen flex flex-col px-3 sm:px-4 pt-3 sm:pt-6">
         {/* Cabecera Principal */}
         <header className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-800/80">
-          <div className="flex items-center gap-3.5">
-            <TriboLogo size={78} />
+          <div className="flex items-center gap-2.5 sm:gap-3.5">
+            <TriboLogo size={52} className="sm:hidden" />
+            <TriboLogo size={62} className="hidden sm:flex" />
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
                   Tribo
                 </h1>
-                <span className="text-[10px] bg-brand-500/15 text-brand-600 dark:text-brand-400 border border-brand-500/30 px-1.5 py-0.2 rounded-md font-extrabold uppercase">
-                  Local
-                </span>
+                {data.dbMode === "SUPABASE" ? (
+                  <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide">
+                    Nube
+                  </span>
+                ) : (
+                  <span className="text-[10px] bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide">
+                    Local
+                  </span>
+                )}
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Sincronización activa</span>
+                <span className="truncate">
+                  {data.dbMode === "SUPABASE" ? "Supabase Online" : "Red Local"}
+                </span>
               </div>
             </div>
           </div>

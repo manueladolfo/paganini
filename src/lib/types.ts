@@ -101,4 +101,5 @@ export interface FamilyAppData {
   logs: ActivityLogDTO[];
   redemptions: RewardRedemptionDTO[];
   notifications: NotificationDTO[];
+  dbMode?: "SUPABASE" | "LOCAL";
 }

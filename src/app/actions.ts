@@ -49,7 +49,11 @@ export async function getAppData() {
     }),
   ]);
 
-  return { users, tasks, rewards, logs, redemptions, notifications };
+  const dbUrl = process.env.DATABASE_URL || "";
+  const isCloud = dbUrl.includes("supabase.com") || dbUrl.includes("postgresql://") || dbUrl.includes("postgres://");
+  const dbMode = isCloud ? "SUPABASE" : "LOCAL";
+
+  return { users, tasks, rewards, logs, redemptions, notifications, dbMode };
 }
 
 // Helper para crear notificaciones familiares en tiempo real

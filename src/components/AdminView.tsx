@@ -200,35 +200,35 @@ export function AdminView({
   return (
     <div className="space-y-6 pb-24 animate-fadeIn">
       {/* Banner de Modo Administrador activo */}
-      <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-rose-500/30 p-5 flex items-center justify-between shadow-xl">
-        <div className="flex items-center gap-3.5">
+      <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-rose-500/30 p-3.5 sm:p-5 flex items-center justify-between gap-3 shadow-xl">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
           <img
             src={
               currentAdmin.avatarUrl ||
               `https://api.dicebear.com/7.x/adventurer/svg?seed=${currentAdmin.name}`
             }
             alt={currentAdmin.name}
-            className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-rose-500 shadow-sm"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-rose-500 shadow-sm shrink-0"
           />
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">
                 Panel de {currentAdmin.name}
               </h2>
-              <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase border border-rose-500/20">
+              <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 text-[9px] sm:text-[10px] font-black uppercase border border-rose-500/20 shrink-0">
                 ADMIN
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-0.5">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-[10px] sm:text-[11px]">
               <button
                 onClick={() => {
                   sounds.playMechanicalClick();
                   setChangePinModalOpen(true);
                 }}
-                className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1 transition-colors cursor-pointer"
+                className="font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1 transition-colors cursor-pointer"
               >
-                <KeyRound className="w-3 h-3" />
-                <span>Cambiar mi PIN ({currentAdmin.pin ? "••••" : "Por defecto: 1234"})</span>
+                <KeyRound className="w-3 h-3 shrink-0" />
+                <span>PIN {currentAdmin.pin ? "(••••)" : "(1234)"}</span>
               </button>
 
               <span className="text-slate-300 dark:text-slate-700 text-xs">•</span>
@@ -238,10 +238,10 @@ export function AdminView({
                   sounds.playMechanicalClick();
                   setBackupModalOpen(true);
                 }}
-                className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 transition-colors cursor-pointer"
+                className="font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 transition-colors cursor-pointer"
                 title="Copia de Seguridad y Restauración"
               >
-                <Database className="w-3 h-3 text-indigo-500" />
+                <Database className="w-3 h-3 text-indigo-500 shrink-0" />
                 <span>Copia de Seguridad</span>
               </button>
             </div>
@@ -253,7 +253,7 @@ export function AdminView({
             sounds.playMechanicalClick();
             onExitAdmin();
           }}
-          className="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer border border-slate-200 dark:border-slate-700"
+          className="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer border border-slate-200 dark:border-slate-700 shrink-0"
         >
           Salir
         </button>
@@ -847,7 +847,7 @@ export function AdminView({
                         </span>
                       </div>
                       <div className="text-xs font-bold text-amber-500 mt-0.5">
-                        {user.balance} puntos acumulados
+                        {!isAdmin ? `${user.balance} puntos acumulados` : "Rol Administrador (sin saldo de puntos)"}
                       </div>
                     </div>
                   </div>

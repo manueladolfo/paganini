@@ -66,16 +66,22 @@ export function UserSwitcher({
           <div className="flex flex-col">
             <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1">
               {currentUser.name}
-              {isAdminMode && (
+              {currentUser.role === "ADMIN" && (
                 <span className="text-[10px] bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.2 rounded-md font-bold">
                   ADMIN
                 </span>
               )}
             </span>
-            <span className="text-[11px] text-amber-500 font-extrabold flex items-center gap-0.5">
-              <Sparkles className="w-3 h-3 text-amber-500 inline" />
-              {currentUser.balance} pts
-            </span>
+            {currentUser.role !== "ADMIN" ? (
+              <span className="text-[11px] text-amber-500 font-extrabold flex items-center gap-0.5">
+                <Sparkles className="w-3 h-3 text-amber-500 inline" />
+                {currentUser.balance} pts
+              </span>
+            ) : (
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                Supervisor
+              </span>
+            )}
           </div>
           <ChevronDown
             className={`w-4 h-4 text-slate-400 ml-1 transition-transform duration-200 ${
@@ -130,7 +136,7 @@ export function UserSwitcher({
                           )}
                         </div>
                         <div className="text-[11px] text-amber-500 font-semibold">
-                          {u.balance} pts
+                          {!isAdmin ? `${u.balance} pts` : "Administrador"}
                         </div>
                       </div>
                     </div>
