@@ -177,9 +177,9 @@ export function TaskModal({
                 }
                 className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 font-medium"
               >
-                <option value="DAILY">Diaria</option>
+                <option value="DAILY">Diaria (se reinicia a las 00:00)</option>
                 <option value="WEEKLY">Semanal</option>
-                <option value="ONCE">Puntual (Única)</option>
+                <option value="ONCE">Puntual / Por Encargo (permanente)</option>
               </select>
             </div>
           </div>

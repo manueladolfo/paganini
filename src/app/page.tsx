@@ -156,6 +156,7 @@ export default function Home() {
             rewards={data.rewards}
             logs={data.logs}
             redemptions={data.redemptions || []}
+            submissions={data.submissions || []}
             onRefresh={() => mutate()}
             onExitAdmin={() => {
               setIsAdminMode(false);

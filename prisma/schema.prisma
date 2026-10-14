@@ -20,6 +20,7 @@ model User {
   updatedAt    DateTime      @updatedAt
 
   assignedTasks      Task[]             @relation("AssignedTasks")
+  submissions        TaskSubmission[]
   logs               ActivityLog[]
   redemptions        RewardRedemption[]
   notificationStates NotificationState[]
@@ -28,22 +29,38 @@ model User {
 }
 
 model Task {
-  id                String      @id @default(uuid())
+  id                String           @id @default(uuid())
   title             String
   description       String?
-  points            Int         // Can be positive or negative
-  recurrence        String      @default("DAILY") // "DAILY" | "WEEKLY" | "ONCE"
-  status            String      @default("PENDING") // "PENDING" | "IN_REVIEW" | "COMPLETED"
+  points            Int              // Can be positive or negative
+  recurrence        String           @default("DAILY") // "DAILY" | "WEEKLY" | "ONCE"
+  status            String           @default("PENDING") // "PENDING" | "IN_REVIEW" | "COMPLETED"
   
-  targetUserId      String?     // NULL for collective tasks (any family member can complete)
-  targetUser        User?       @relation("AssignedTasks", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId      String?          // NULL for collective tasks (any family member can complete)
+  targetUser        User?            @relation("AssignedTasks", fields: [targetUserId], references: [id], onDelete: Cascade)
   
-  submittedByUserId String?     // ID of member who marked "Pendiente de revisión"
+  submittedByUserId String?          // Legacy / ID of member who marked "Pendiente de revisión"
+  submissions       TaskSubmission[]
   
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@map("tasks")
+}
+
+model TaskSubmission {
+  id          String    @id @default(uuid())
+  taskId      String
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
+  points      Int
+  reviewedBy  String?   // Name of Admin who approved/rejected
+  reviewedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("task_submissions")
 }
 
 model ActivityLog {

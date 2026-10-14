@@ -15,6 +15,29 @@ export interface UserDTO {
   updatedAt: Date;
 }
 
+export interface TaskSubmissionDTO {
+  id: string;
+  taskId: string;
+  task?: {
+    id: string;
+    title: string;
+    points: number;
+    recurrence: string;
+    description?: string | null;
+  };
+  userId: string;
+  user?: {
+    id: string;
+    name: string;
+    avatarUrl?: string | null;
+  };
+  status: string; // "PENDING" | "APPROVED" | "REJECTED"
+  points: number;
+  reviewedBy?: string | null;
+  reviewedAt?: Date | null;
+  createdAt: Date;
+}
+
 export interface TaskDTO {
   id: string;
   title: string;
@@ -29,6 +52,7 @@ export interface TaskDTO {
     avatarUrl?: string | null;
   } | null;
   submittedByUserId?: string | null;
+  submissions?: TaskSubmissionDTO[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -101,5 +125,6 @@ export interface FamilyAppData {
   logs: ActivityLogDTO[];
   redemptions: RewardRedemptionDTO[];
   notifications: NotificationDTO[];
+  submissions?: TaskSubmissionDTO[];
   dbMode?: "SUPABASE" | "LOCAL";
 }

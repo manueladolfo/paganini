@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getAppData() {
-  const [users, tasks, rewards, logs, redemptions, notifications] = await Promise.all([
+  const [users, tasks, submissions, rewards, logs, redemptions, notifications] = await Promise.all([
     prisma.user.findMany({
       orderBy: { balance: "desc" },
     }),
@@ -13,11 +13,23 @@ export async function getAppData() {
         targetUser: {
           select: { id: true, name: true, avatarUrl: true },
         },
+        submissions: {
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        },
       },
       orderBy: [
         { status: "desc" }, // IN_REVIEW first
         { points: "desc" },
       ],
+    }),
+    prisma.taskSubmission.findMany({
+      where: { status: "PENDING" },
+      include: {
+        task: true,
+        user: { select: { id: true, name: true, avatarUrl: true } },
+      },
+      orderBy: { createdAt: "asc" },
     }),
     prisma.reward.findMany({
       orderBy: { costPoints: "asc" },
@@ -53,7 +65,7 @@ export async function getAppData() {
   const isCloud = dbUrl.includes("supabase.com") || dbUrl.includes("postgresql://") || dbUrl.includes("postgres://");
   const dbMode = isCloud ? "SUPABASE" : "LOCAL";
 
-  return { users, tasks, rewards, logs, redemptions, notifications, dbMode };
+  return { users, tasks, submissions, rewards, logs, redemptions, notifications, dbMode };
 }
 
 // Helper para crear notificaciones familiares en tiempo real
@@ -100,7 +112,7 @@ export async function verifyAdminPin(pin: string, targetUserId?: string): Promis
   return Boolean(admin || trimmed === "1234");
 }
 
-// Participante: Marcar tarea como "Pendiente de revisión"
+// Participante: Marcar tarea como completada para revisión
 export async function markTaskInReview(taskId: string, userId: string) {
   const [task, user] = await Promise.all([
     prisma.task.findUnique({ where: { id: taskId } }),
@@ -108,6 +120,17 @@ export async function markTaskInReview(taskId: string, userId: string) {
   ]);
   if (!task) throw new Error("Tarea no encontrada");
 
+  // Crear una entrega individual acumulable
+  await prisma.taskSubmission.create({
+    data: {
+      taskId: task.id,
+      userId: userId,
+      status: "PENDING",
+      points: task.points,
+    },
+  });
+
+  // Mantener compatibilidad con estado de tarea general
   await prisma.task.update({
     where: { id: taskId },
     data: {
@@ -118,8 +141,8 @@ export async function markTaskInReview(taskId: string, userId: string) {
 
   if (user) {
     await createFamilyNotification({
-      title: `${user.name} marcó una tarea para revisión`,
-      description: `Completó: "${task.title}"`,
+      title: `${user.name} completó una tarea`,
+      description: `Para validar: "${task.title}" (+${task.points} pts)`,
       type: "TASK_REVIEW",
       pointsDelta: task.points,
       actorName: user.name,
@@ -131,63 +154,68 @@ export async function markTaskInReview(taskId: string, userId: string) {
   return { success: true };
 }
 
-// Administrador: Aprobar tarea y acreditar puntos
-export async function approveTask(taskId: string, approvedByAdminName?: string) {
-  const task = await prisma.task.findUnique({
-    where: { id: taskId },
-    include: { targetUser: true },
+// Administrador: Aprobar una entrega específica
+export async function approveTaskSubmission(submissionId: string, approvedByAdminName?: string) {
+  const submission = await prisma.taskSubmission.findUnique({
+    where: { id: submissionId },
+    include: { task: true, user: true },
   });
 
-  if (!task) throw new Error("Tarea no encontrada");
-
-  const beneficiaryId = task.submittedByUserId || task.targetUserId;
-  if (!beneficiaryId) {
-    throw new Error("No hay usuario asignado ni reclamante para esta tarea");
-  }
-
-  const user = await prisma.user.findUnique({ where: { id: beneficiaryId } });
-  if (!user) throw new Error("Usuario beneficiario no encontrado");
+  if (!submission) throw new Error("Entrega no encontrada");
+  if (submission.status !== "PENDING") throw new Error("Esta entrega ya ha sido procesada");
 
   const adminLabel = approvedByAdminName ? `por ${approvedByAdminName}` : "por Admin";
 
-  // Transacción atómica: sumar saldo, registrar log y actualizar tarea
   await prisma.$transaction(async (tx) => {
-    // Actualizar balance del usuario
+    // 1. Sumar puntos al usuario
     await tx.user.update({
-      where: { id: beneficiaryId },
+      where: { id: submission.userId },
       data: {
-        balance: {
-          increment: task.points,
-        },
+        balance: { increment: submission.points },
       },
     });
 
-    // Registrar en auditoría de actividad
+    // 2. Marcar entrega como aprobada
+    await tx.taskSubmission.update({
+      where: { id: submissionId },
+      data: {
+        status: "APPROVED",
+        reviewedBy: approvedByAdminName || "Admin",
+        reviewedAt: new Date(),
+      },
+    });
+
+    // 3. Registrar en auditoría
     await tx.activityLog.create({
       data: {
-        userId: beneficiaryId,
-        pointsDelta: task.points,
-        type: task.points >= 0 ? "TASK_DONE" : "PENALTY",
-        description: `Validada ${adminLabel}: ${task.title}`,
+        userId: submission.userId,
+        pointsDelta: submission.points,
+        type: submission.points >= 0 ? "TASK_DONE" : "PENALTY",
+        description: `Validada ${adminLabel}: ${submission.task.title}`,
       },
     });
 
-    // Si es tarea de una sola vez ("ONCE"), queda COMPLETED. Si es diaria/semanal, vuelve a PENDING para el siguiente ciclo.
-    const nextStatus = task.recurrence === "ONCE" ? "COMPLETED" : "PENDING";
-    await tx.task.update({
-      where: { id: taskId },
-      data: {
-        status: nextStatus,
-        submittedByUserId: null,
-      },
+    // 4. Si no quedan más entregas pendientes para esta tarea, actualizar estado de la tarea
+    const remainingPending = await tx.taskSubmission.count({
+      where: { taskId: submission.taskId, status: "PENDING" },
     });
+
+    if (remainingPending === 0) {
+      await tx.task.update({
+        where: { id: submission.taskId },
+        data: {
+          status: "PENDING",
+          submittedByUserId: null,
+        },
+      });
+    }
   });
 
   await createFamilyNotification({
-    title: `Tarea aprobada ${adminLabel}`,
-    description: `${user.name} recibió +${task.points} pts por: "${task.title}"`,
+    title: `Entrega aprobada ${adminLabel}`,
+    description: `${submission.user.name} recibió +${submission.points} pts por: "${submission.task.title}"`,
     type: "TASK_DONE",
-    pointsDelta: task.points,
+    pointsDelta: submission.points,
     actorName: approvedByAdminName || "Admin",
     actorAvatar: null,
   });
@@ -196,16 +224,123 @@ export async function approveTask(taskId: string, approvedByAdminName?: string) 
   return { success: true };
 }
 
-// Administrador: Rechazar tarea en revisión
-export async function rejectTask(taskId: string) {
-  await prisma.task.update({
-    where: { id: taskId },
-    data: {
-      status: "PENDING",
-      submittedByUserId: null,
-    },
+// Administrador: Aprobar TODAS las entregas pendientes de golpe (en 1 clic)
+export async function approveAllPendingSubmissions(approvedByAdminName?: string) {
+  const pendingSubmissions = await prisma.taskSubmission.findMany({
+    where: { status: "PENDING" },
+    include: { task: true, user: true },
   });
 
+  if (pendingSubmissions.length === 0) return { count: 0 };
+
+  const adminLabel = approvedByAdminName ? `por ${approvedByAdminName}` : "por Admin";
+
+  await prisma.$transaction(async (tx) => {
+    for (const sub of pendingSubmissions) {
+      // Sumar balance
+      await tx.user.update({
+        where: { id: sub.userId },
+        data: { balance: { increment: sub.points } },
+      });
+
+      // Marcar submission
+      await tx.taskSubmission.update({
+        where: { id: sub.id },
+        data: {
+          status: "APPROVED",
+          reviewedBy: approvedByAdminName || "Admin",
+          reviewedAt: new Date(),
+        },
+      });
+
+      // Crear log
+      await tx.activityLog.create({
+        data: {
+          userId: sub.userId,
+          pointsDelta: sub.points,
+          type: sub.points >= 0 ? "TASK_DONE" : "PENALTY",
+          description: `Validada ${adminLabel}: ${sub.task.title}`,
+        },
+      });
+    }
+
+    // Resetear todas las tareas a PENDING
+    await tx.task.updateMany({
+      where: { status: "IN_REVIEW" },
+      data: { status: "PENDING", submittedByUserId: null },
+    });
+  });
+
+  await createFamilyNotification({
+    title: `Todas las tareas validadas ${adminLabel}`,
+    description: `Se han aprobado ${pendingSubmissions.length} entregas de la semana con éxito`,
+    type: "TASK_DONE",
+    pointsDelta: null,
+    actorName: approvedByAdminName || "Admin",
+    actorAvatar: null,
+  });
+
+  revalidatePath("/");
+  return { count: pendingSubmissions.length };
+}
+
+// Administrador: Rechazar una entrega específica
+export async function rejectTaskSubmission(submissionId: string) {
+  const submission = await prisma.taskSubmission.findUnique({
+    where: { id: submissionId },
+  });
+  if (!submission) throw new Error("Entrega no encontrada");
+
+  await prisma.$transaction(async (tx) => {
+    await tx.taskSubmission.update({
+      where: { id: submissionId },
+      data: {
+        status: "REJECTED",
+        reviewedAt: new Date(),
+      },
+    });
+
+    const remainingPending = await tx.taskSubmission.count({
+      where: { taskId: submission.taskId, status: "PENDING" },
+    });
+
+    if (remainingPending === 0) {
+      await tx.task.update({
+        where: { id: submission.taskId },
+        data: {
+          status: "PENDING",
+          submittedByUserId: null,
+        },
+      });
+    }
+  });
+
+  revalidatePath("/");
+  return { success: true };
+}
+
+// Mantener compatibilidad hacia atrás
+export async function approveTask(taskId: string, approvedByAdminName?: string) {
+  const pendingSub = await prisma.taskSubmission.findFirst({
+    where: { taskId, status: "PENDING" },
+  });
+  if (pendingSub) {
+    return approveTaskSubmission(pendingSub.id, approvedByAdminName);
+  }
+  return { success: true };
+}
+
+export async function rejectTask(taskId: string) {
+  const pendingSub = await prisma.taskSubmission.findFirst({
+    where: { taskId, status: "PENDING" },
+  });
+  if (pendingSub) {
+    return rejectTaskSubmission(pendingSub.id);
+  }
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { status: "PENDING", submittedByUserId: null },
+  });
   revalidatePath("/");
   return { success: true };
 }

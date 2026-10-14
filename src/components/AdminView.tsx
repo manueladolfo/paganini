@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { UserDTO, TaskDTO, ActivityLogDTO, RewardDTO, RewardRedemptionDTO } from "@/lib/types";
+import { UserDTO, TaskDTO, ActivityLogDTO, RewardDTO, RewardRedemptionDTO, TaskSubmissionDTO } from "@/lib/types";
 import {
   CheckCircle2,
   XCircle,
@@ -33,8 +33,19 @@ import {
   Heart,
   Star,
   Database,
+  CheckCheck,
 } from "lucide-react";
-import { approveTask, rejectTask, deleteTask, markRewardDelivered, toggleUserActive, deleteReward } from "@/app/actions";
+import {
+  approveTask,
+  rejectTask,
+  approveTaskSubmission,
+  approveAllPendingSubmissions,
+  rejectTaskSubmission,
+  deleteTask,
+  markRewardDelivered,
+  toggleUserActive,
+  deleteReward,
+} from "@/app/actions";
 import { TaskModal } from "./TaskModal";
 import { ManualPointsModal } from "./ManualPointsModal";
 import { EditUserModal } from "./EditUserModal";
@@ -51,6 +62,7 @@ interface AdminViewProps {
   rewards: RewardDTO[];
   logs: ActivityLogDTO[];
   redemptions: RewardRedemptionDTO[];
+  submissions?: TaskSubmissionDTO[];
   onRefresh: () => void;
   onExitAdmin: () => void;
 }
@@ -62,6 +74,7 @@ export function AdminView({
   rewards,
   logs,
   redemptions,
+  submissions = [],
   onRefresh,
   onExitAdmin,
 }: AdminViewProps) {
@@ -77,9 +90,20 @@ export function AdminView({
   const [backupModalOpen, setBackupModalOpen] = useState(false);
   const [changePinModalOpen, setChangePinModalOpen] = useState(false);
   const [processingTaskId, setProcessingTaskId] = useState<string | null>(null);
+  const [approvingAll, setApprovingAll] = useState(false);
 
-  // Tareas en estado "IN_REVIEW" esperando aprobación
-  const pendingTasks = tasks.filter((t) => t.status === "IN_REVIEW");
+  // Entregas pendientes acumuladas (de la semana o de hoy)
+  const pendingSubmissionsList = submissions.length > 0
+    ? submissions
+    : tasks.filter((t) => t.status === "IN_REVIEW").map((t) => ({
+        id: `legacy-${t.id}`,
+        taskId: t.id,
+        task: t,
+        userId: t.submittedByUserId || t.targetUserId || "",
+        status: "PENDING",
+        points: t.points,
+        createdAt: t.updatedAt,
+      }));
 
   // Recompensas pendientes de entregar/disfrutar
   const pendingRedemptions = redemptions.filter((r) => r.status !== "DELIVERED");
@@ -89,31 +113,54 @@ export function AdminView({
     setActiveTab(tab);
   };
 
-  const handleApprove = async (taskId: string) => {
+  const handleApproveSubmission = async (subId: string, taskId?: string) => {
     sounds.playMechanicalClick();
-    setProcessingTaskId(taskId);
+    setProcessingTaskId(subId);
     try {
-      await approveTask(taskId, currentAdmin.name);
+      if (subId.startsWith("legacy-") && taskId) {
+        await approveTask(taskId, currentAdmin.name);
+      } else {
+        await approveTaskSubmission(subId, currentAdmin.name);
+      }
       sounds.playSuccessChime();
       onRefresh();
     } catch (err: any) {
-      alert(err.message || "Error al validar tarea");
+      alert(err.message || "Error al validar entrega");
     } finally {
       setProcessingTaskId(null);
     }
   };
 
-  const handleReject = async (taskId: string) => {
+  const handleRejectSubmission = async (subId: string, taskId?: string) => {
     sounds.playMechanicalClick();
-    setProcessingTaskId(taskId);
+    setProcessingTaskId(subId);
     try {
-      await rejectTask(taskId);
+      if (subId.startsWith("legacy-") && taskId) {
+        await rejectTask(taskId);
+      } else {
+        await rejectTaskSubmission(subId);
+      }
       sounds.playPenaltyTone();
       onRefresh();
     } catch (err: any) {
-      alert(err.message || "Error al rechazar tarea");
+      alert(err.message || "Error al rechazar entrega");
     } finally {
       setProcessingTaskId(null);
+    }
+  };
+
+  const handleApproveAll = async () => {
+    if (!confirm(`¿Validar y acreditar todas las ${pendingSubmissionsList.length} entregas pendientes en 1 clic?`)) return;
+    sounds.playMechanicalClick();
+    setApprovingAll(true);
+    try {
+      await approveAllPendingSubmissions(currentAdmin.name);
+      sounds.playSuccessChime();
+      onRefresh();
+    } catch (err: any) {
+      alert(err.message || "Error al validar todo");
+    } finally {
+      setApprovingAll(false);
     }
   };
 
@@ -293,9 +340,9 @@ export function AdminView({
         >
           <Clock className="w-3.5 h-3.5 shrink-0" />
           <span className="truncate">Validar</span>
-          {pendingTasks.length > 0 && (
+          {pendingSubmissionsList.length > 0 && (
             <span className="w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center">
-              {pendingTasks.length}
+              {pendingSubmissionsList.length}
             </span>
           )}
         </button>
@@ -361,12 +408,23 @@ export function AdminView({
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span>Pendientes de Aprobación</span>
               <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">
-                {pendingTasks.length}
+                {pendingSubmissionsList.length}
               </span>
             </h3>
+
+            {pendingSubmissionsList.length > 1 && (
+              <button
+                onClick={handleApproveAll}
+                disabled={approvingAll}
+                className="btn-gamified bg-emerald-600 hover:bg-emerald-500 border-b-emerald-800 text-white font-extrabold text-[11px] py-1.5 px-3 rounded-xl shadow-gamified flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <CheckCheck className="w-3.5 h-3.5" />
+                <span>{approvingAll ? "Validando..." : "Validar Todo (1 Clic)"}</span>
+              </button>
+            )}
           </div>
 
-          {pendingTasks.length === 0 ? (
+          {pendingSubmissionsList.length === 0 ? (
             <div className="text-center py-12 px-4 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40">
               <Check className="w-10 h-10 text-emerald-500 mx-auto mb-2 opacity-80" />
               <h4 className="text-sm font-bold text-slate-800 dark:text-slate-300">
@@ -377,21 +435,20 @@ export function AdminView({
               </p>
             </div>
           ) : (
-            pendingTasks.map((task) => {
-              const claimant = users.find(
-                (u) => u.id === (task.submittedByUserId || task.targetUserId)
-              );
+            pendingSubmissionsList.map((sub: any) => {
+              const claimant = sub.user || users.find((u) => u.id === sub.userId);
+              const taskObj = sub.task || tasks.find((t) => t.id === sub.taskId);
 
               return (
                 <div
-                  key={task.id}
+                  key={sub.id}
                   className="bg-white dark:bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 shadow-md flex flex-col gap-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
                         <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-500/30">
-                          {task.recurrence}
+                          {taskObj?.recurrence === "ONCE" ? "Puntual" : taskObj?.recurrence || "Diaria"}
                         </span>
                         {claimant && (
                           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -406,35 +463,38 @@ export function AdminView({
                             <span>{claimant.name}</span>
                           </div>
                         )}
+                        <span className="text-[10px] text-slate-400">
+                          • {formatDate(sub.createdAt)}
+                        </span>
                       </div>
                       <h4 className="text-base font-bold text-slate-900 dark:text-white">
-                        {task.title}
+                        {taskObj?.title || "Tarea del hogar"}
                       </h4>
-                      {task.description && (
+                      {taskObj?.description && (
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                          {task.description}
+                          {taskObj.description}
                         </p>
                       )}
                     </div>
 
                     <span className="text-sm font-black text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20 shrink-0">
-                      +{task.points} pts
+                      +{sub.points} pts
                     </span>
                   </div>
 
                   <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                     <button
-                      onClick={() => handleApprove(task.id)}
-                      disabled={processingTaskId === task.id}
+                      onClick={() => handleApproveSubmission(sub.id, sub.taskId)}
+                      disabled={processingTaskId === sub.id}
                       className="flex-1 btn-gamified bg-emerald-600 hover:bg-emerald-500 border-b-emerald-800 text-white font-bold text-xs py-2.5 px-3 rounded-xl shadow-gamified flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Aprobar (+{task.points} pts)</span>
+                      <span>Aprobar (+{sub.points} pts)</span>
                     </button>
 
                     <button
-                      onClick={() => handleReject(task.id)}
-                      disabled={processingTaskId === task.id}
+                      onClick={() => handleRejectSubmission(sub.id, sub.taskId)}
+                      disabled={processingTaskId === sub.id}
                       className="btn-gamified bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-b-slate-400 dark:border-b-slate-950 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 px-3 rounded-xl shadow-gamified flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <XCircle className="w-4 h-4 text-rose-500" />
