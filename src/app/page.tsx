@@ -101,21 +101,32 @@ export default function Home() {
             <PaganiniLogo size={54} className="hidden sm:flex shrink-0" />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white truncate">
+                <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white shrink-0">
                   Paganini
                 </h1>
+                {/* Badge en pantallas sm o superiores (el resto se queda igual) */}
                 {data.dbMode === "SUPABASE" ? (
-                  <span className="text-[9px] sm:text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1 sm:px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
+                  <span className="hidden sm:inline-block text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
                     Nube
                   </span>
                 ) : (
-                  <span className="text-[9px] sm:text-[10px] bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 px-1 sm:px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
+                  <span className="hidden sm:inline-block text-[10px] bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
                     Local
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 min-w-0">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                {/* En móvil vertical: el cartel Nube readaptado abajo para dar todo el ancho a Paganini */}
+                {data.dbMode === "SUPABASE" ? (
+                  <span className="sm:hidden text-[8.5px] font-black uppercase tracking-wider px-1 py-0.2 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shrink-0">
+                    Nube
+                  </span>
+                ) : (
+                  <span className="sm:hidden text-[8.5px] font-black uppercase tracking-wider px-1 py-0.2 rounded bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 shrink-0">
+                    Local
+                  </span>
+                )}
                 <span className="truncate">
                   {data.dbMode === "SUPABASE" ? "Online" : "Local"}
                 </span>
