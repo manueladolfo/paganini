@@ -80,15 +80,15 @@ export function NotificationBell({
   };
 
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       {/* Botón de la Campanita */}
       <button
         onClick={handleOpen}
         aria-label="Notificaciones familiares"
-        className="relative w-9 h-9 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-300 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-300 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
         title="Notificaciones en tiempo real"
       >
-        <Bell className="w-4 h-4" />
+        <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         {/* Puntito rojo que desaparece en tiempo real para este usuario cuando las ve */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-md animate-bounce">

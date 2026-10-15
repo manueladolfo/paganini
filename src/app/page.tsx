@@ -9,7 +9,8 @@ import { UserSwitcher } from "@/components/UserSwitcher";
 import { PaganiniLogo } from "@/components/PaganiniLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/NotificationBell";
-import { Wifi, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { OnboardingModal } from "@/components/OnboardingModal";
+import { Wifi, Sparkles, Volume2, VolumeX, PlayCircle } from "lucide-react";
 import { sounds } from "@/lib/sounds";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -25,6 +26,7 @@ export default function Home() {
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [adminUserId, setAdminUserId] = useState<string>("");
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setIsMuted(sounds.getMuted());
@@ -38,6 +40,16 @@ export default function Home() {
       sounds.playMechanicalClick();
     }
   };
+
+  // Comprobar si el usuario ya vio el onboarding
+  useEffect(() => {
+    try {
+      const seen = localStorage.getItem("paganini-onboarding-v1");
+      if (!seen) {
+        setIsOnboardingOpen(true);
+      }
+    } catch (_) {}
+  }, []);
 
   // Inicializar usuario recordando el último activo en este dispositivo/navegador
   useEffect(() => {
@@ -83,29 +95,32 @@ export default function Home() {
       {/* Contenedor central adaptado a Mobile-First (max-w-md / max-w-lg en tablet) */}
       <div className="w-full max-w-lg min-h-screen flex flex-col px-3 sm:px-4 pt-3 sm:pt-6">
         {/* Cabecera Principal */}
-        <header className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-800/80">
-          <div className="flex items-center gap-2.5 sm:gap-3.5">
-            <PaganiniLogo size={48} className="sm:hidden" />
-            <PaganiniLogo size={58} className="hidden sm:flex" />
-            <div>
+        <header className="flex items-center justify-between pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-slate-200 dark:border-slate-800/80 gap-1.5 sm:gap-3 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3.5 min-w-0 shrink">
+            <PaganiniLogo size={38} className="sm:hidden shrink-0" />
+            <PaganiniLogo size={54} className="hidden sm:flex shrink-0" />
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white truncate">
                   Paganini
                 </h1>
                 {data.dbMode === "SUPABASE" ? (
-                  <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide">
+                  <span className="text-[9px] sm:text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-1 sm:px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
                     Nube
                   </span>
                 ) : (
-                  <span className="text-[10px] bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide">
+                  <span className="text-[9px] sm:text-[10px] bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 px-1 sm:px-1.5 py-0.5 rounded-md font-extrabold uppercase tracking-wide shrink-0">
                     Local
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 min-w-0">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 <span className="truncate">
-                  {data.dbMode === "SUPABASE" ? "Supabase Online" : "Red Local"}
+                  {data.dbMode === "SUPABASE" ? "Online" : "Local"}
+                </span>
+                <span className="hidden sm:inline text-slate-400 dark:text-slate-500">
+                  {data.dbMode === "SUPABASE" ? "• Supabase" : "• Red"}
                 </span>
               </div>
             </div>
@@ -116,13 +131,13 @@ export default function Home() {
             <button
               onClick={toggleSound}
               aria-label={isMuted ? "Activar efectos de sonido" : "Silenciar efectos de sonido"}
-              className="w-9 h-9 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
               title={isMuted ? "Activar sonidos hápticos" : "Silenciar sonidos"}
             >
               {isMuted ? (
-                <VolumeX className="w-4 h-4 text-slate-400" />
+                <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
               ) : (
-                <Volume2 className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-600 dark:text-brand-400" />
               )}
             </button>
 
@@ -206,7 +221,33 @@ export default function Home() {
             onRefresh={() => mutate()}
           />
         )}
+
+        {/* Pie de página discreto y minimalista (Opción 5) */}
+        <footer className="mt-auto pt-6 pb-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-1.5 font-medium">
+            <span>Paganini v1.5.0</span>
+            <span>•</span>
+            <span>Hábitos y Recompensas</span>
+          </div>
+
+          <button
+            onClick={() => {
+              sounds.playMechanicalClick();
+              setIsOnboardingOpen(true);
+            }}
+            className="flex items-center gap-1.5 font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors cursor-pointer"
+          >
+            <PlayCircle className="w-4 h-4" />
+            <span>Ver cómo funciona (1 min)</span>
+          </button>
+        </footer>
       </div>
+
+      {/* Modal de Onboarding y Video Demostración (Opción 2) */}
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+      />
     </main>
   );
 }

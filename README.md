@@ -8,8 +8,22 @@
 
   <br />
 
-  [🚀 Abrir Aplicación](https://paganini-five.vercel.app) • [📸 Vistas](#-vistas-de-la-aplicación) • [🌟 Características](#-características-principales) • [🛠️ Instalación](#-puesta-en-marcha-local)
+  [🚀 Abrir Aplicación](https://paganini-five.vercel.app) • [🎬 Video Demo](#-video-demostración-1-minuto) • [📸 Vistas](#-vistas-de-la-aplicación) • [🌟 Características](#-características-principales) • [🛠️ Instalación](#-puesta-en-marcha-local)
 
+</div>
+
+---
+
+## 🎬 Video Demostración (1 minuto)
+
+> [!TIP]
+> Descubre cómo funciona Paganini en este breve recorrido de 60 segundos con banda sonora acústica familiar y la interfaz real en acción:
+
+<div align="center">
+  <a href="https://paganini-five.vercel.app/paganini-demo.mp4" target="_blank">
+    <img src="public/paganini-demo-thumb.jpg" width="720" alt="Video Demostración de Paganini" style="border-radius: 20px; box-shadow: 0 12px 36px rgba(0,0,0,0.4);" />
+  </a>
+  <p><em>👉 <a href="https://paganini-five.vercel.app/paganini-demo.mp4"><strong>Haz clic aquí para reproducir el video demo en alta definición (1080p)</strong></a> o míralo dentro de la propia aplicación.</em></p>
 </div>
 
 ---

@@ -76,10 +76,10 @@ export function ParticipantView({
   };
 
   return (
-    <div className="space-y-6 pb-24 animate-fadeIn">
+    <div className="space-y-3.5 sm:space-y-5 pb-20 animate-fadeIn">
       {/* Banner de Aviso si el perfil está pausado */}
       {currentUser.isActive === false && (
-        <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex items-start gap-3 shadow-sm animate-fadeIn">
+        <div className="p-3 sm:p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex items-start gap-3 shadow-sm animate-fadeIn">
           <PauseCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
           <div className="text-xs">
             <span className="font-bold block text-amber-800 dark:text-amber-300">
@@ -105,10 +105,10 @@ export function ParticipantView({
       />
 
       {/* Navegación por pestañas móvil-first */}
-      <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+      <div className="grid grid-cols-3 gap-1 p-1 bg-slate-200/70 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
         <button
           onClick={() => handleTabChange("tasks")}
-          className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tab === "tasks"
               ? "bg-brand-600 text-white shadow-md"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -120,7 +120,7 @@ export function ParticipantView({
 
         <button
           onClick={() => handleTabChange("rewards")}
-          className={`relative flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`relative flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tab === "rewards"
               ? "bg-amber-500 text-amber-950 shadow-md"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -135,7 +135,7 @@ export function ParticipantView({
 
         <button
           onClick={() => handleTabChange("ranking")}
-          className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tab === "ranking"
               ? "bg-sky-600 text-white shadow-md"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -148,7 +148,7 @@ export function ParticipantView({
 
       {/* Contenido según pestaña */}
       {tab === "tasks" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 shrink-0">
               <span>Tareas Pendientes</span>

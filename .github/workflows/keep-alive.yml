@@ -1,4 +1,4 @@
-name: Tribo Keep Alive
+name: Paganini Keep Alive
 
 on:
   schedule:
@@ -11,10 +11,10 @@ jobs:
     name: Ping Actividad Base de Datos
     runs-on: ubuntu-latest
     steps:
-      - name: Ping a Tribo API (Vercel + Supabase PostgreSQL)
+      - name: Ping a Paganini API (Vercel + Supabase PostgreSQL)
         run: |
-          echo "Iniciando ping a la API de Tribo para registrar actividad en Supabase..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://tribo-five.vercel.app/api/data)
+          echo "Iniciando ping a la API de Paganini para registrar actividad en Supabase..."
+          HTTP_CODE=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" https://paganini-five.vercel.app/api/data)
           echo "Código HTTP recibido: $HTTP_CODE"
           if [ "$HTTP_CODE" -eq 200 ]; then
             echo "✅ Ping completado con éxito. Consulta a Supabase PostgreSQL ejecutada."
