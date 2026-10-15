@@ -194,6 +194,22 @@ Si deseas subir la aplicación a internet para utilizarla fuera de casa con dato
 
 ## 🏆 Historial de Versiones
 
+### ⚡ Release v1.6.0 (Apple Arcade Edition & UI Refinement)
+*Fecha de lanzamiento: 15 de Octubre de 2026*
+- 🎨 **Tipografía Apple Arcade**: Identidad tipográfica con degradado neón `emerald -> teal -> amber` en el logotipo de Paganini y la pantalla de carga, adaptado con contraste óptimo tanto en modo oscuro como en modo claro.
+- 📱 **Encuadre Perfecto en Móvil Vertical**: Reubicación y readaptación del badge `[NUBE]` a la segunda línea junto al indicador de estado (`🟢 [NUBE] Online`), garantizando que el nombre completo de **Paganini** se lea al 100% sin truncar en ningún smartphone.
+- ✨ **Tour Nativo Interactivo de 4 Pasos**: Onboarding carrusel estilo iOS con capturas de pantalla reales en alta resolución, navegación por puntos (*dots*), efectos hápticos mecánicos y música ambiental de piano suave (`ambient.m4a`) con control de volumen/silencio.
+- 🏆 **Podio Familiar Compacto**: Rediseño vertical del podio ahorrando más de 140px, unificando la cabecera y el saldo en una sola línea, optimizando el tamaño de avatares y superponiendo la insignia *"TÚ"* para que las tareas queden a la vista de inmediato sin scroll forzado.
+- 👤 **Selector de Usuarios & Desplegable Seguro**: Posicionamiento `fixed top-16 right-3` con margen seguro en smartphones y backdrop para cerrar tocando en cualquier parte de la pantalla. Nombres largos legibles y badge de administrador compacto.
+- ⚡ **Reparación del Script Keep-Alive**: Actualización del workflow de GitHub Actions (`keep-alive.yml`) apuntando al nuevo endpoint `https://paganini-five.vercel.app/api/data` con reintentos automáticos para mantener Supabase PostgreSQL siempre activo.
+
+### 🔔 Release v1.5.0 (Push Notifications & Avatar Expansion)
+*Fecha de lanzamiento: 14 de Octubre de 2026*
+- 📲 **Notificaciones Web Push Nativas**: Notificaciones en segundo plano para iPhone/iPad (PWA en pantalla de inicio con iOS 16.4+), Android y PC mediante Web Push API, claves VAPID y Service Worker nativo.
+- 🎭 **16 Nuevos Avatares Categorizados**: Selector organizado en Chicos, Chicas, Papás y Mamás con avatares SVG de alta definición.
+- 🔄 **Reactivación Inmediata de Tareas Rechazadas**: Al rechazar una tarea en revisión, el participante puede corregirla y volver a enviarla en el mismo día.
+- 💸 **Lamento Divertido de Paganini**: Efecto de sonido humorístico cartoon al pulsar el logo 3D del papá rockero.
+
 ### 🎸 Release v1.1.0 (Paganini Edition & Rebranding)
 - 🎨 **Nuevo Nombre e Identidad**: Cambio oficial de nombre a **Paganini** en toda la aplicación, metadatos PWA y documentación.
 - 🖼️ **Iconografía 3D Full-Bleed**: Nuevo icono de marca exclusivo en alta definición con el papá rockero (camiseta de Héroes del Silencio, barba, gafas y billetes de euro volando), optimizado de borde a borde para pantallas retina, accesos directos de móviles (PWA) y favicon de navegador.

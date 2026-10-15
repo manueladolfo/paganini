@@ -238,7 +238,7 @@ export default function Home() {
         {/* Pie de página discreto y minimalista (Opción 5) */}
         <footer className="mt-auto pt-6 pb-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-1.5 font-medium">
-            <span>Paganini v1.5.0</span>
+            <span>Paganini v1.6.0</span>
             <span>•</span>
             <span>Hábitos y Recompensas</span>
           </div>
