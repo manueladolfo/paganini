@@ -122,15 +122,18 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMelodyMuted, setIsMelodyMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentSlide(0);
-      // Iniciar suavemente la melodía ambiental
+      // Intentar iniciar suavemente la melodía ambiental
       if (audioRef.current) {
         audioRef.current.volume = 0.25;
         audioRef.current.currentTime = 0;
-        audioRef.current.play().catch(() => {});
+        audioRef.current.play().catch(() => {
+          // Bloqueado por política autoplay en iOS/Safari hasta la primera interacción
+        });
       }
     } else {
       if (audioRef.current) {
@@ -139,11 +142,27 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
     }
   }, [isOpen]);
 
+  const ensureAudioPlaying = () => {
+    if (audioRef.current && !isMelodyMuted) {
+      if (audioRef.current.paused) {
+        audioRef.current.volume = 0.25;
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {});
+        }
+      }
+    }
+  };
+
   const toggleMelody = () => {
     if (!audioRef.current) return;
     const nextMuted = !isMelodyMuted;
     setIsMelodyMuted(nextMuted);
     audioRef.current.muted = nextMuted;
+    if (!nextMuted) {
+      audioRef.current.volume = 0.25;
+      audioRef.current.play().catch(() => {});
+    }
   };
 
   if (!isOpen) return null;
@@ -153,6 +172,7 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
 
   const handleNext = () => {
     sounds.playMechanicalClick();
+    ensureAudioPlaying();
     if (isLast) {
       handleFinish();
     } else {
@@ -162,7 +182,25 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
 
   const handlePrev = () => {
     sounds.playMechanicalClick();
+    ensureAudioPlaying();
     setCurrentSlide((prev) => Math.max(0, prev - 1));
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    ensureAudioPlaying();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    if (diff > 50) {
+      handleNext();
+    } else if (diff < -50) {
+      handlePrev();
+    }
+    touchStartX.current = null;
   };
 
   const handleFinish = () => {
@@ -174,9 +212,19 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-fadeIn select-none"
+      onClickCapture={ensureAudioPlaying}
+      onTouchStartCapture={ensureAudioPlaying}
+    >
       {/* Audio ambiental relajante para el tour */}
-      <audio ref={audioRef} src="/tour/ambient.m4a" loop />
+      <audio
+        ref={audioRef}
+        src="/tour/ambient.m4a"
+        loop
+        preload="auto"
+        playsInline
+      />
 
       {/* Backdrop */}
       <div
@@ -185,7 +233,11 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
         aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh]">
+      <div
+        className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh]"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Cabecera del Tour */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800 bg-slate-900/90 shrink-0">
           <div className="flex items-center gap-2 min-w-0">
@@ -292,6 +344,7 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
                 key={idx}
                 onClick={() => {
                   sounds.playMechanicalClick();
+                  ensureAudioPlaying();
                   setCurrentSlide(idx);
                 }}
                 className={`h-2 rounded-full transition-all cursor-pointer ${
