@@ -84,7 +84,9 @@ export default function Home() {
         <div className="mb-4 animate-pulse">
           <PaganiniLogo size={88} />
         </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Paganini</h2>
+        <h2 className="text-2xl font-black tracking-tight bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500 dark:from-emerald-400 dark:via-teal-300 dark:to-amber-300 bg-clip-text text-transparent select-none">
+          Paganini
+        </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Conectando a la red local...</p>
       </div>
     );
@@ -101,7 +103,7 @@ export default function Home() {
             <PaganiniLogo size={54} className="hidden sm:flex shrink-0" />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white shrink-0">
+                <h1 className="text-base sm:text-xl font-black tracking-tight shrink-0 bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500 dark:from-emerald-400 dark:via-teal-300 dark:to-amber-300 bg-clip-text text-transparent select-none drop-shadow-xs">
                   Paganini
                 </h1>
                 {/* Badge en pantallas sm o superiores (el resto se queda igual) */}
