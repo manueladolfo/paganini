@@ -44,7 +44,7 @@ export default function Home() {
   // Comprobar si el usuario ya vio el onboarding
   useEffect(() => {
     try {
-      const seen = localStorage.getItem("paganini-onboarding-v1");
+      const seen = localStorage.getItem("paganini-onboarding-v2");
       if (!seen) {
         setIsOnboardingOpen(true);
       }
@@ -237,13 +237,13 @@ export default function Home() {
             }}
             className="flex items-center gap-1.5 font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors cursor-pointer"
           >
-            <PlayCircle className="w-4 h-4" />
-            <span>Ver cómo funciona (1 min)</span>
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            <span>Ver cómo funciona (Tour guiado)</span>
           </button>
         </footer>
       </div>
 
-      {/* Modal de Onboarding y Video Demostración (Opción 2) */}
+      {/* Modal de Tour Guiado y Onboarding (Opción 2) */}
       <OnboardingModal
         isOpen={isOnboardingOpen}
         onClose={() => setIsOnboardingOpen(false)}

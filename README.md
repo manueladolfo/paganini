@@ -8,23 +8,21 @@
 
   <br />
 
-  [🚀 Abrir Aplicación](https://paganini-five.vercel.app) • [🎬 Video Demo](#-video-demostración-1-minuto) • [📸 Vistas](#-vistas-de-la-aplicación) • [🌟 Características](#-características-principales) • [🛠️ Instalación](#-puesta-en-marcha-local)
+  [🚀 Abrir Aplicación](https://paganini-five.vercel.app) • [✨ Tour Guiado](#-tour-guiado-interactivo) • [📸 Vistas](#-vistas-de-la-aplicación) • [🌟 Características](#-características-principales) • [🛠️ Instalación](#-puesta-en-marcha-local)
 
 </div>
 
 ---
 
-## 🎬 Video Demostración (1 minuto)
+## ✨ Tour Guiado Interactivo
 
 > [!TIP]
-> Descubre cómo funciona Paganini en este breve recorrido de 60 segundos con banda sonora acústica familiar y la interfaz real en acción:
+> Paganini incluye un **tour nativo interactivo de 4 pasos** al entrar por primera vez (o accesible desde el pie de página *"Ver cómo funciona"*), con música ambiental relajante y explicaciones claras:
 
-<div align="center">
-  <a href="https://paganini-five.vercel.app/paganini-demo.mp4" target="_blank">
-    <img src="public/paganini-demo-thumb.jpg" width="720" alt="Video Demostración de Paganini" style="border-radius: 20px; box-shadow: 0 12px 36px rgba(0,0,0,0.4);" />
-  </a>
-  <p><em>👉 <a href="https://paganini-five.vercel.app/paganini-demo.mp4"><strong>Haz clic aquí para reproducir el video demo en alta definición (1080p)</strong></a> o míralo dentro de la propia aplicación.</em></p>
-</div>
+1. **🏆 Podio Familiar**: Motivación diaria en directo para los hijos, con acumulación de puntos y medallas (1º, 2º y 3º puesto).
+2. **✓ Tareas y Hábitos**: Tareas diarias, semanales y únicas con botón de entrega táctil *"Marcar para revisión"*.
+3. **🛡️ Control Parental con PIN**: Panel exclusivo de Papá y Mamá con código de 4 dígitos para aprobar entregas y supervisar auditorías.
+4. **🎁 Tienda de Premios**: Canje de planes familiares pactados (cine, cenas, videojuegos) con lluvia de confeti y sincronización en la nube.
 
 ---
 
