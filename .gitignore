@@ -22,6 +22,9 @@ prisma/dev.db-journal
 # Vercel
 .vercel
 
+# Scratch y temporales
+scratch/
+
 # Sistema operativo y logs
 .DS_Store
 npm-debug.log*

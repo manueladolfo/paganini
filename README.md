@@ -202,6 +202,7 @@ Si deseas subir la aplicación a internet para utilizarla fuera de casa con dato
 - 🏆 **Podio Familiar Compacto**: Rediseño vertical del podio ahorrando más de 140px, unificando la cabecera y el saldo en una sola línea, optimizando el tamaño de avatares y superponiendo la insignia *"TÚ"* para que las tareas queden a la vista de inmediato sin scroll forzado.
 - 👤 **Selector de Usuarios & Desplegable Seguro**: Posicionamiento `fixed top-16 right-3` con margen seguro en smartphones y backdrop para cerrar tocando en cualquier parte de la pantalla. Nombres largos legibles y badge de administrador compacto.
 - ⚡ **Reparación del Script Keep-Alive**: Actualización del workflow de GitHub Actions (`keep-alive.yml`) apuntando al nuevo endpoint `https://paganini-five.vercel.app/api/data` con reintentos automáticos para mantener Supabase PostgreSQL siempre activo.
+- 🛡️ **Seguridad Supabase (RLS Activado)**: Habilitación de Row-Level Security (RLS) en todas las tablas del esquema público para blindar la base de datos frente a accesos anónimos externos (`rls_disabled_in_public`), con script de verificación reproducible (`npm run db:rls`).
 
 ### 🔔 Release v1.5.0 (Push Notifications & Avatar Expansion)
 *Fecha de lanzamiento: 14 de Octubre de 2026*

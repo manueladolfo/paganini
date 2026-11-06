@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js"
+    "db:seed": "node prisma/seed.js",
+    "db:rls": "node scripts/enable_rls.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
